@@ -1,0 +1,58 @@
+name: wiihope
+description: "La mejor app para registrar y dividir gastos con amigos"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # ====== DEPEDENCIAS START ======
+  cupertino_icons: ^1.0.8
+  
+  # ====== FIREBASE ======
+  firebase_core: ^4.3.0
+  firebase_auth: ^6.1.3
+  cloud_firestore: ^6.1.1
+  email_validator: ^3.0.0
+  
+  # ====== UI/UX ESENCIALES ======
+  google_fonts: ^7.0.0
+  fl_chart: ^1.1.1
+  
+  # ====== UTILIDADES ESENCIALES ======
+  intl: ^0.20.2
+  url_launcher: ^6.3.2
+  shared_preferences: ^2.5.3
+  # ====== DEPEDENCIAS END ======
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+dependency_overrides:
+  characters: ^1.4.1
+  matcher: ^0.12.18
+  material_color_utilities: ^0.13.0
+  meta: ^1.17.0
+  test_api: ^0.7.9
+
+# ====== CONFIGURACIÓN DE ICONOS SOLO ANDROID ======
+flutter_launcher_icons:
+  android: true
+  ios: false  # ❌ Desactivado
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#B9F6CA"
+  adaptive_icon_foreground: "assets/images/logo.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966620743950",
+    "project_id": "wiihope",
+    "storage_bucket": "wiihope.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966620743950:android:6632abd181240f76e66f5f",
+        "android_client_info": {
+          "package_name": "com.example.wiihope"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX7usDF2sdCUq8ZvApWO182txECAOzrzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
