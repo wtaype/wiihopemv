@@ -15,45 +15,35 @@ class _PantallaCargandoState extends State<PantallaCargando> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => AuthServicio.estaLogueado
-                ? const PantallaPrincipal()
-                : const PantallaLogin(),
-            transitionDuration: const Duration(milliseconds: 200),
-            transitionsBuilder: (_, a, __, c) =>
-                FadeTransition(opacity: a, child: c),
-          ),
-        );
-      }
+    // Saltar a la pantalla correcta tan pronto como sea posible
+    Future.microtask(() {
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => AuthServicio.estaLogueado
+              ? const PantallaPrincipal()
+              : const PantallaLogin(),
+          transitionDuration: const Duration(milliseconds: 120),
+          transitionsBuilder: (_, a, __, c) =>
+              FadeTransition(opacity: a, child: c),
+        ),
+      );
     });
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => const Scaffold(
     backgroundColor: AppColores.verdeClaro,
     body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: AppColores.verdePrimario,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.account_balance_wallet,
-              size: 80,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text('WiiHope', style: AppEstilos.tituloGrande),
-        ],
+      child: SizedBox(
+        width: 48,
+        height: 48,
+        child: CircularProgressIndicator(
+          strokeWidth: 4,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          backgroundColor: AppColores.verdePrimario,
+        ),
       ),
     ),
   );

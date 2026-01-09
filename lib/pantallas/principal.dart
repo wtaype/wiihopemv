@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../recursos/colores.dart';
 import '../recursos/constantes.dart';
-import 'pantalla1.dart';
-import 'pantalla2.dart';
-import 'pantalla3.dart';
-import 'pantalla4.dart';
-import 'pantalla5.dart';
+import 'p1_oracion.dart';
+import 'p2_citas.dart';
+import 'p3_audio.dart';
+import 'p4_acerca.dart';
+import 'p5_configuracion.dart';
 
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});
@@ -15,21 +15,21 @@ class PantallaPrincipal extends StatefulWidget {
 }
 
 class _PantallaPrincipalState extends State<PantallaPrincipal> {
-  int _indiceActual = 0;
-  late PageController _pageController;
-
   final List<Widget> _pantallas = const [
-    PantallaRegistrar(),
-    PantallaGastos(),
-    PantallaMensajes(),
-    PantallaArreglar(),
+    PantallaOracion(),
+    PantallaCitas(),
+    PantallaAudio(),
+    PantallaAcerca(),
     PantallaConfiguracion(),
   ];
+
+  late final PageController _pageController;
+  int _indice = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _indiceActual);
+    _pageController = PageController(initialPage: _indice);
   }
 
   @override
@@ -37,15 +37,15 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
     backgroundColor: AppColores.verdeClaro,
     body: PageView(
       controller: _pageController,
-      onPageChanged: (index) => setState(() => _indiceActual = index),
+      onPageChanged: (i) => setState(() => _indice = i),
       children: _pantallas,
     ),
     bottomNavigationBar: BottomNavigationBar(
-      currentIndex: _indiceActual,
-      onTap: (index) {
-        setState(() => _indiceActual = index);
+      currentIndex: _indice,
+      onTap: (i) {
+        setState(() => _indice = i);
         _pageController.animateToPage(
-          index,
+          i,
           duration: AppConstantes.animacionRapida,
           curve: Curves.easeInOut,
         );
@@ -61,24 +61,24 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
       elevation: 10,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.add_circle_outline),
-          activeIcon: Icon(Icons.add_circle),
-          label: 'Registrar',
+          icon: Icon(Icons.volunteer_activism_outlined),
+          activeIcon: Icon(Icons.volunteer_activism),
+          label: 'Oración',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long_outlined),
-          activeIcon: Icon(Icons.receipt_long),
-          label: 'Gastos',
+          icon: Icon(Icons.format_quote_outlined),
+          activeIcon: Icon(Icons.format_quote),
+          label: 'Citas',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.chat_bubble_outline),
-          activeIcon: Icon(Icons.chat_bubble),
-          label: 'Mensajes',
+          icon: Icon(Icons.library_music_outlined),
+          activeIcon: Icon(Icons.library_music),
+          label: 'Audio',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.verified_outlined),
-          activeIcon: Icon(Icons.verified),
-          label: 'Arreglar',
+          icon: Icon(Icons.info_outline),
+          activeIcon: Icon(Icons.info),
+          label: 'Acerca',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings_outlined),

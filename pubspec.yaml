@@ -1,5 +1,5 @@
 name: wiihope
-description: "La mejor app para registrar y dividir gastos con amigos"
+description: "Biblia Audio - La Palabra de Dios en tu móvil"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -11,6 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  # ====== AUDIO ======
+  audioplayers: ^6.1.0
   
   # ====== DEPEDENCIAS START ======
   cupertino_icons: ^1.0.8
@@ -29,6 +32,7 @@ dependencies:
   intl: ^0.20.2
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.3
+  http: ^1.2.0
   # ====== DEPEDENCIAS END ======
 
 dev_dependencies:
@@ -48,19 +52,19 @@ dependency_overrides:
 # ====== CONFIGURACIÓN DE ICONOS SOLO ANDROID ======
 flutter_launcher_icons:
   android: true
-  ios: false  # ❌ Desactivado
+  ios: false
   image_path: "assets/images/logo.png"
   adaptive_icon_background: "#B9F6CA"
   adaptive_icon_foreground: "assets/images/logo.png"
 
 # ====== SPLASH NATIVO (ANDROID) ======
 flutter_native_splash:
-  color: "#B9F6CA"        # verde claro
-  image: assets/images/logo.png
+  color: "#B9F6CA"
+  image: assets/images/logo1.png
   android_gravity: center
   android_12:
     color: "#B9F6CA"
-    image: assets/images/logo.png
+    image: assets/images/logo1.png
 
 flutter:
   uses-material-design: true

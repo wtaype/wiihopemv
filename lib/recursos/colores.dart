@@ -12,6 +12,7 @@ class AppColores {
   // 🖤 Textos
   static const Color textoOscuro = Color(0xFF2E2E2E);
   static const Color textoVerde = Color(0xFF388E3C);
+  static const Color verdeOscuro = Color(0xFF388E3C);
   static const Color blanco = Colors.white;
 
   // 🔗 NUEVO: Color para enlaces
