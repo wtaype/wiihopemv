@@ -12,11 +12,11 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # ====== AUDIO ======
+  # ====== AUDIO SIMPLE Y ESTABLE ======
   audioplayers: ^6.1.0
   
-  # ====== DEPEDENCIAS START ======
-  cupertino_icons: ^1.0.8
+  # ====== NOTIFICACIONES ======
+  flutter_local_notifications: ^18.0.1
   
   # ====== FIREBASE ======
   firebase_core: ^4.3.0
@@ -27,13 +27,13 @@ dependencies:
   # ====== UI/UX ESENCIALES ======
   google_fonts: ^7.0.0
   fl_chart: ^1.1.1
+  cupertino_icons: ^1.0.8
   
   # ====== UTILIDADES ESENCIALES ======
   intl: ^0.20.2
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.3
   http: ^1.2.0
-  # ====== DEPEDENCIAS END ======
 
 dev_dependencies:
   flutter_test:
@@ -49,7 +49,6 @@ dependency_overrides:
   meta: ^1.17.0
   test_api: ^0.7.9
 
-# ====== CONFIGURACIÓN DE ICONOS SOLO ANDROID ======
 flutter_launcher_icons:
   android: true
   ios: false
@@ -57,7 +56,6 @@ flutter_launcher_icons:
   adaptive_icon_background: "#B9F6CA"
   adaptive_icon_foreground: "assets/images/logo.png"
 
-# ====== SPLASH NATIVO (ANDROID) ======
 flutter_native_splash:
   color: "#B9F6CA"
   image: assets/images/logo1.png
