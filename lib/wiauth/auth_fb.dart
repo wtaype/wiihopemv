@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
-import '../recursos/constantes.dart';
+import '../widev.dart';
 import 'firestore_fb.dart';
 import 'usuario.dart'; // 🔥 AGREGAR
 

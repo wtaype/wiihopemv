@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
-import '../modelos/registro_citas.dart';
-import '../wiauth/auth_fb.dart';
+import '../../widev.dart';
+import 'registro_citas.dart';
+import '../../wiauth/auth_fb.dart';
 
 class PantallaCitas extends StatefulWidget {
   const PantallaCitas({super.key});

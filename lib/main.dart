@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart'; // 🔥 AGREGAR
 import 'firebase_options.dart'; // 🔥 AGREGAR
 import 'inicio/cargando.dart';
-import 'recursos/colores.dart';
+import 'widev.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
+import '../../widev.dart';
 import 'dart:math' as math;
 
 class PantallaAudio extends StatefulWidget {

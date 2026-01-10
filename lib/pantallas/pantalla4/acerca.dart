@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
+import '../../widev.dart';
 
 class PantallaAcerca extends StatelessWidget {
   const PantallaAcerca({super.key});

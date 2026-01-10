@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../recursos/constantes.dart';
+import '../widev.dart';
 import 'usuario.dart';
 
 class DatabaseServicio {

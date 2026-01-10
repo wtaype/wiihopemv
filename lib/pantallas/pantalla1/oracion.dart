@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
+import '../../widev.dart';
 
 class PantallaOracion extends StatefulWidget {
   const PantallaOracion({super.key});

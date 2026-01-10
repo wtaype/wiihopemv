@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
+import '../widev.dart';
 import '../pantallas/principal.dart';
 import 'auth_fb.dart';
 import 'firestore_fb.dart';

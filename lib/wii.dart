@@ -1,0 +1,17 @@
+class wii {
+  static const String app = 'WiiHope';
+  static const int lanzamiento = 2024;
+  static const String autor = '@wilder.taype';
+  static const String link = 'https://wtaype.github.io/';
+  static const String version = 'v12';
+}
+
+/** ACTUALIZACIÓN PRINCIPAL ONE DEV [START] (1)
+git add . ; git commit -m "Actualizacion Principal v12.10.10" ; git push origin main
+
+Actualizar main luego esto, pero si es mucho, solo esto. (2)
+git tag v12 -m "Version v12" ; git push origin v12
+
+// En caso de emergencia, para actualizar el Tag existente. (3)
+git tag -d v12 ; git tag v12 -m "Version v12 actualizada" ; git push origin v11 --force
+ ACTUALIZACION TAG[END] */

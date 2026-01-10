@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
-import '../wiauth/auth_fb.dart';
+import '../../widev.dart';
+import '../../wiauth/auth_fb.dart';
 
 class CitaRegistro {
   final String id;

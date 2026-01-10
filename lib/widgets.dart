@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'colores.dart';
-import 'constantes.dart';
+import 'widev.dart';
 
 // 🎯 Botón principal que usamos mucho
 class BotonPrincipal extends StatelessWidget {

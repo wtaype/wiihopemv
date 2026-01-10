@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
-import 'p1_oracion.dart';
-import 'p2_citas.dart';
-import 'p3_audio.dart';
-import 'p4_acerca.dart';
-import 'p5_configuracion.dart';
+import '../widev.dart';
+import 'pantalla1/oracion.dart';
+import 'pantalla2/citas.dart';
+import 'pantalla3/audio.dart';
+import 'pantalla4/acerca.dart';
+import 'pantalla5/configuracion.dart';
 
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});

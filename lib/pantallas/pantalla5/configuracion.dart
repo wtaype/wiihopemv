@@ -3,13 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
-import '../recursos/widgets.dart';
-import '../wiauth/auth_fb.dart';
-import '../wiauth/login.dart';
-import '../wiauth/usuario.dart';
-import '../wiauth/firestore_fb.dart';
+import '../../widev.dart';
+import '../../widgets.dart';
+import '../../wiauth/auth_fb.dart';
+import '../../wiauth/login.dart';
+import '../../wiauth/usuario.dart';
+import '../../wiauth/firestore_fb.dart';
 
 class PantallaConfiguracion extends StatefulWidget {
   const PantallaConfiguracion({super.key});

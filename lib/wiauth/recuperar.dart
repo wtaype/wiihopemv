@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../recursos/colores.dart';
-import '../recursos/constantes.dart';
+import '../widev.dart';
 import 'auth_fb.dart';
 import 'login.dart';
 

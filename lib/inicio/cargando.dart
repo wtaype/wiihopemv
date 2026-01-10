@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../recursos/colores.dart';
+import '../widev.dart';
 import '../wiauth/login.dart';
 import '../wiauth/auth_fb.dart';
 import '../pantallas/principal.dart';
