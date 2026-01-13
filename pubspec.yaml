@@ -1,0 +1,68 @@
+name: wiihope
+description: "Biblia Audio - La Palabra de Dios en tu móvil"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # ====== AUDIO / Reproducción de contenido bíblico ======
+  audioplayers: ^6.1.0  # Reproductor de audio para versículos y capítulos
+  
+  # ====== FIREBASE / Backend, autenticación y base de datos ======
+  firebase_core: ^4.3.0          # Núcleo de Firebase, inicialización de servicios
+  firebase_auth: ^6.1.3          # Autenticación de usuarios (login, registro, recuperación)
+  cloud_firestore: ^6.1.1        # Base de datos NoSQL para progreso, favoritos y notas
+  email_validator: ^3.0.0        # Validación de formato de correo electrónico
+  
+  # ====== UI/UX / Interfaz visual y experiencia de usuario ======
+  google_fonts: ^7.0.0           # Tipografías personalizadas para un diseño moderno
+  fl_chart: ^1.1.1               # Gráficos para mostrar estadísticas de lectura/escucha
+  
+  # ====== UTILIDADES / Funcionalidades complementarias ======
+  intl: ^0.20.2                  # Internacionalización, formato de fechas y números
+  url_launcher: ^6.3.2           # Abrir enlaces externos (web, redes sociales, email)
+  shared_preferences: ^2.5.3     # Almacenamiento local de configuraciones del usuario
+  http: ^1.2.0                   # Peticiones HTTP para APIs externas o descarga de recursos
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0           # Análisis estático de código (buenas prácticas)
+  flutter_launcher_icons: ^0.14.4 # Generador automático de iconos de app
+  flutter_native_splash: ^2.4.1   # Generador de pantalla de splash nativa
+
+dependency_overrides:
+  characters: ^1.4.1              # Sobrescritura para compatibilidad de dependencias
+  matcher: ^0.12.18               # Sobrescritura para tests
+  material_color_utilities: ^0.13.0  # Utilidades de color Material Design
+  meta: ^1.17.0                   # Anotaciones de metadatos
+  test_api: ^0.7.9                # API de testing
+
+# ====== CONFIGURACIÓN DE ICONO DE LA APP ======
+flutter_launcher_icons:
+  android: true                                    # Generar icono para Android
+  image_path: "assets/images/iconos.png"           # Ruta de la imagen del icono
+  adaptive_icon_background: "#B9F6CA"              # Color de fondo del icono adaptativo
+  adaptive_icon_foreground: "assets/images/iconos.png"  # Imagen frontal del icono adaptativo
+
+# ====== CONFIGURACIÓN DE PANTALLA DE INICIO (SPLASH) ======
+flutter_native_splash:
+  color: "#B9F6CA"                    # Color de fondo de la pantalla de splash
+  image: assets/images/inicio.png     # Imagen mostrada en el splash
+  android_gravity: center             # Alineación de la imagen (centrada)
+  android_12:                         # Configuración específica para Android 12+
+    color: "#B9F6CA"                  # Color de fondo para Android 12+
+    image: assets/images/inicio.png   # Imagen de splash para Android 12+
+
+# ====== CONFIGURACIÓN DE ASSETS Y RECURSOS ======
+flutter:
+  uses-material-design: true          # Habilitar Material Design
+  assets:
+    - assets/images/                  # Carpeta con imágenes (iconos, ilustraciones)

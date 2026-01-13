@@ -1,0 +1,46 @@
+# ====== ARCHIVOS DEL SISTEMA Y EDITORES ======
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+*.iml
+*.ipr
+*.iws
+.idea/
+#.vscode/
+
+# ====== FLUTTER Y COMPILACIÓN ======
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+app.*.symbols
+app.*.map.json
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# ====== SEGURIDAD Y CREDENCIALES ======
+google-services.json
+firebase_options.dart
+.firebase/
+*.env*
+*.keystore
+*.jks
+key.properties
+secrets.properties
+**/apikeys.dart
+**/secrets.dart
+**/config/credentials.dart
