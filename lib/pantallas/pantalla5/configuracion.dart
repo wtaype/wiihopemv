@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../../wii.dart';
+import '../../wicss.dart';
 import '../../widev.dart';
-import '../../widgets.dart';
 import '../../wiauth/auth_fb.dart';
 import '../../wiauth/login.dart';
 import '../../wiauth/usuario.dart';
@@ -128,8 +129,8 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: Text('Configuración', style: AppEstilos.textoBoton),
-      backgroundColor: AppColores.verdePrimario,
-      foregroundColor: AppColores.blanco,
+      backgroundColor: AppCSS.verdePrimario,
+      foregroundColor: AppCSS.blanco,
       centerTitle: true,
       automaticallyImplyLeading: false,
       actions: [
@@ -140,7 +141,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
         ),
       ],
     ),
-    backgroundColor: AppColores.verdeClaro,
+    backgroundColor: AppCSS.verdeClaro,
     body: _cargandoUsuario
         ? Center(child: IndicadorCarga(mensaje: 'Cargando perfil...'))
         : _usuario == null
@@ -151,10 +152,10 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
             ),
           )
         : SingleChildScrollView(
-            padding: AppConstantes.miwp,
+            padding: AppCSS.miwp,
             child: Column(
               children: [
-                AppConstantes.espacioMedioWidget,
+                AppCSS.espacioMedioWidget,
 
                 // 📷 Foto de perfil circular
                 _fotoPerfil(),
@@ -174,7 +175,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
                 // ℹ️ Solo versión y creado
                 _infoApp(),
 
-                AppConstantes.espacioMedioWidget,
+                AppCSS.espacioMedioWidget,
               ],
             ),
           ),
@@ -187,10 +188,10 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
       height: 120,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColores.blanco,
+        color: AppCSS.blanco,
         boxShadow: [
           BoxShadow(
-            color: AppColores.verdePrimario.withOpacity(0.3),
+            color: AppCSS.verdePrimario.withOpacity(0.3),
             blurRadius: 12,
             offset: Offset(0, 6),
           ),
@@ -214,32 +215,26 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
   Widget _fotoDefault() => Container(
     width: 120,
     height: 120,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: AppColores.verdeSuave,
-    ),
+    decoration: BoxDecoration(shape: BoxShape.circle, color: AppCSS.verdeSuave),
     child: ClipOval(
       child: Image.asset(
-        AppConstantes.logoSmile,
+        AppCSS.logoSmile,
         width: 120,
         height: 120,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Icon(
-          Icons.account_circle,
-          size: 80,
-          color: AppColores.verdePrimario,
-        ),
+        errorBuilder: (_, __, ___) =>
+            Icon(Icons.account_circle, size: 80, color: AppCSS.verdePrimario),
       ),
     ),
   );
 
   // 👤 Usuario simple sin fondo - SÚPER LIMPIO
   Widget _usuarioSimple() => Padding(
-    padding: EdgeInsets.symmetric(vertical: AppConstantes.espacioMedio),
+    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
     child: Text(
       '@${_usuario?.usuario ?? 'Usuario'}',
       style: AppEstilos.subtitulo.copyWith(
-        color: AppColores.verdePrimario,
+        color: AppCSS.verdePrimario,
         fontWeight: FontWeight.w700,
       ),
       textAlign: TextAlign.center,
@@ -248,7 +243,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
 
   // 📋 Tarjeta de información personal - UNA SOLA TARJETA BLANCA
   Widget _tarjetaInformacion() => TarjetaInformacion(
-    colorFondo: AppColores.blanco,
+    colorFondo: AppCSS.blanco,
     elevacion: 3,
     contenido: Column(
       children: [
@@ -257,15 +252,9 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
           '${_usuario?.nombre ?? 'N/A'} ${_usuario?.apellidos ?? ''}',
           Icons.badge,
         ),
-        Divider(
-          color: AppColores.grisClaro,
-          height: AppConstantes.espacioGrande,
-        ),
+        Divider(color: AppCSS.grisClaro, height: AppCSS.espacioGrande),
         _itemInfo('Email', _usuario?.email ?? 'N/A', Icons.email),
-        Divider(
-          color: AppColores.grisClaro,
-          height: AppConstantes.espacioGrande,
-        ),
+        Divider(color: AppCSS.grisClaro, height: AppCSS.espacioGrande),
         _itemInfo('Grupo Unido', _usuario?.grupo ?? 'N/A', Icons.group),
       ],
     ),
@@ -278,12 +267,12 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
         width: 45,
         height: 45,
         decoration: BoxDecoration(
-          color: AppColores.verdeSuave,
+          color: AppCSS.verdeSuave,
           shape: BoxShape.circle,
         ),
-        child: Icon(icono, color: AppColores.verdePrimario, size: 22),
+        child: Icon(icono, color: AppCSS.verdePrimario, size: 22),
       ),
-      AppConstantes.espacioMedioWidget,
+      AppCSS.espacioMedioWidget,
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,14 +280,14 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
             Text(
               titulo,
               style: AppEstilos.textoChico.copyWith(
-                color: AppColores.gris,
+                color: AppCSS.gris,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Text(
               valor,
               style: AppEstilos.textoNormal.copyWith(
-                color: AppColores.textoOscuro,
+                color: AppCSS.textoOscuro,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -310,11 +299,9 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
 
   // 🖼️ Cambiar foto - PADDING MODERADO
   Widget _cambiarFoto() => Padding(
-    padding: EdgeInsets.symmetric(
-      vertical: AppConstantes.espacioMedio,
-    ), // 🔥 REDUCIDO
+    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio), // 🔥 REDUCIDO
     child: TarjetaInformacion(
-      colorFondo: AppColores.blanco,
+      colorFondo: AppCSS.blanco,
       elevacion: 2,
       contenido: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,16 +312,16 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
                 width: 45,
                 height: 45,
                 decoration: BoxDecoration(
-                  color: AppColores.verdeSuave,
+                  color: AppCSS.verdeSuave,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.photo_camera,
-                  color: AppColores.verdePrimario,
+                  color: AppCSS.verdePrimario,
                   size: 22,
                 ),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,21 +329,19 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
                     Text(
                       'Foto de Perfil',
                       style: AppEstilos.subtitulo.copyWith(
-                        color: AppColores.textoOscuro,
+                        color: AppCSS.textoOscuro,
                       ),
                     ),
                     Text(
                       'Agrega el enlace de tu foto',
-                      style: AppEstilos.textoChico.copyWith(
-                        color: AppColores.gris,
-                      ),
+                      style: AppEstilos.textoChico.copyWith(color: AppCSS.gris),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          AppConstantes.espacioMedioWidget,
+          AppCSS.espacioMedioWidget,
 
           CampoTexto(
             etiqueta: 'URL de la imagen',
@@ -365,7 +350,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
             controlador: _controllerFoto,
             tipoTeclado: TextInputType.url,
           ),
-          AppConstantes.espacioMedioWidget,
+          AppCSS.espacioMedioWidget,
 
           SizedBox(
             width: double.infinity,
@@ -383,9 +368,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
 
   // 🚪 Botón cerrar sesión - PADDING REDUCIDO
   Widget _botonCerrarSesion() => Padding(
-    padding: EdgeInsets.symmetric(
-      vertical: AppConstantes.espacioChico,
-    ), // 🔥 REDUCIDO
+    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioChico), // 🔥 REDUCIDO
     child: SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
@@ -393,13 +376,13 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
         icon: Icon(Icons.logout),
         label: Text('Cerrar Sesión'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColores.error,
-          foregroundColor: AppColores.blanco,
+          backgroundColor: AppCSS.error,
+          foregroundColor: AppCSS.blanco,
           padding: EdgeInsets.symmetric(
-            vertical: AppConstantes.espacioMedio,
+            vertical: AppCSS.espacioMedio,
           ), // 🔥 REDUCIDO
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+            borderRadius: BorderRadius.circular(AppCSS.radioMedio),
           ),
         ),
       ),
@@ -408,18 +391,18 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
 
   // ℹ️ Solo versión y creado - SIN ICONO NI NOMBRE DE APP
   Widget _infoApp() => Padding(
-    padding: EdgeInsets.symmetric(vertical: AppConstantes.espacioMedio),
+    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
     child: Column(
       children: [
         Text(
-          'Versión ${AppConstantes.version}',
-          style: AppEstilos.textoChico.copyWith(color: AppColores.gris),
+          'Versión ${wii.version}',
+          style: AppEstilos.textoChico.copyWith(color: AppCSS.gris),
         ),
-        AppConstantes.espacioChicoWidget,
+        AppCSS.espacioChicoWidget,
         Text(
-          AppConstantes.creadoBy,
+          AppCSS.creadoBy,
           style: AppEstilos.textoChico.copyWith(
-            color: AppColores.gris,
+            color: AppCSS.gris,
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -511,26 +494,26 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
           '¿Estás seguro que quieres cerrar sesión?',
           style: AppEstilos.textoNormal,
         ),
-        backgroundColor: AppColores.blanco,
+        backgroundColor: AppCSS.blanco,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+          borderRadius: BorderRadius.circular(AppCSS.radioMedio),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancelar', style: TextStyle(color: AppColores.gris)),
+            child: Text('Cancelar', style: TextStyle(color: AppCSS.gris)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColores.error,
+              backgroundColor: AppCSS.error,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppConstantes.radioChico),
+                borderRadius: BorderRadius.circular(AppCSS.radioChico),
               ),
             ),
             child: Text(
               'Cerrar Sesión',
-              style: TextStyle(color: AppColores.blanco),
+              style: TextStyle(color: AppCSS.blanco),
             ),
           ),
         ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../../widev.dart';
+import '../../wicss.dart';
 import 'biblia.dart';
 
 class PantallaAudio extends StatefulWidget {
@@ -281,11 +281,11 @@ class _PantallaAudioState extends State<PantallaAudio> {
           '📖 Biblia Audio',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: AppColores.verdePrimario,
+        backgroundColor: AppCSS.verdePrimario,
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AppCSS.verdeClaro,
       body: Column(
         children: [
           _buildCompactPlayer(),
@@ -300,17 +300,17 @@ class _PantallaAudioState extends State<PantallaAudio> {
   Widget _buildCompactPlayer() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.21,
-      margin: AppConstantes.miwp,
+      margin: AppCSS.miwp,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColores.verdePrimario, AppColores.verdeSuave],
+          colors: [AppCSS.verdePrimario, AppCSS.verdeSuave],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
         boxShadow: [
           BoxShadow(
-            color: AppColores.verdePrimario.withOpacity(0.3),
+            color: AppCSS.verdePrimario.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -397,7 +397,7 @@ class _PantallaAudioState extends State<PantallaAudio> {
         icon: Icon(
           _isPlaying ? Icons.pause : Icons.play_arrow,
           size: 36,
-          color: AppColores.verdePrimario,
+          color: AppCSS.verdePrimario,
         ),
         onPressed: _togglePlayPause,
       ),
@@ -514,7 +514,7 @@ class _PantallaAudioState extends State<PantallaAudio> {
       margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
       ),
       child: _itemsFiltrados.isEmpty
           ? Center(
@@ -538,7 +538,7 @@ class _PantallaAudioState extends State<PantallaAudio> {
                   dense: true,
                   leading: Icon(
                     isActual ? Icons.play_circle : Icons.play_circle_outline,
-                    color: isActual ? AppColores.verdePrimario : Colors.grey,
+                    color: isActual ? AppCSS.verdePrimario : Colors.grey,
                     size: 28,
                   ),
                   title: Text(
@@ -550,7 +550,7 @@ class _PantallaAudioState extends State<PantallaAudio> {
                           : FontWeight.normal,
                     ),
                   ),
-                  tileColor: isActual ? AppColores.verdeSuave : null,
+                  tileColor: isActual ? AppCSS.verdeSuave : null,
                   onTap: () => _reproducirCapitulo(libro, capitulo),
                 );
               },

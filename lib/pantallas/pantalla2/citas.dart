@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../widev.dart';
+import '../../wicss.dart';
 import 'registro_citas.dart';
 import '../../wiauth/auth_fb.dart';
 
@@ -136,7 +136,7 @@ class _PantallaCitasState extends State<PantallaCitas> {
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppConstantes.radioGrande),
+          top: Radius.circular(AppCSS.radioGrande),
         ),
       ),
       builder: (ctx) => Padding(
@@ -180,10 +180,10 @@ class _PantallaCitasState extends State<PantallaCitas> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColores.verdeClaro,
+    backgroundColor: AppCSS.verdeClaro,
     appBar: AppBar(
       title: Text('Citas', style: AppEstilos.textoBoton),
-      backgroundColor: AppColores.verdePrimario,
+      backgroundColor: AppCSS.verdePrimario,
       foregroundColor: Colors.white,
       centerTitle: true,
       automaticallyImplyLeading: false,
@@ -203,9 +203,9 @@ class _PantallaCitasState extends State<PantallaCitas> {
             child: Text('Sin citas todavía', style: AppEstilos.textoNormal),
           )
         : ListView.separated(
-            padding: AppConstantes.miwpL,
+            padding: AppCSS.miwpL,
             itemCount: _citas.length,
-            separatorBuilder: (_, __) => AppConstantes.espacioMedioWidget,
+            separatorBuilder: (_, __) => AppCSS.espacioMedioWidget,
             itemBuilder: (_, i) => _CitaCard(
               cita: _citas[i],
               onFav: () => _toggleFavorito(_citas[i]),
@@ -220,17 +220,17 @@ class _SkeletonList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView.separated(
-    padding: AppConstantes.miwpL,
+    padding: AppCSS.miwpL,
     itemCount: count,
-    separatorBuilder: (_, __) => AppConstantes.espacioMedioWidget,
+    separatorBuilder: (_, __) => AppCSS.espacioMedioWidget,
     itemBuilder: (_, __) => Container(
-      padding: AppConstantes.miwp,
+      padding: AppCSS.miwp,
       decoration: BoxDecoration(
-        color: AppColores.blanco,
-        borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+        color: AppCSS.blanco,
+        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
         boxShadow: [
           BoxShadow(
-            color: AppColores.verdePrimario.withOpacity(0.08),
+            color: AppCSS.verdePrimario.withOpacity(0.08),
             blurRadius: 10,
             offset: const Offset(0, 6),
           ),
@@ -255,7 +255,7 @@ class _SkeletonList extends StatelessWidget {
     width: w,
     height: h,
     decoration: BoxDecoration(
-      color: AppColores.grisClaro,
+      color: AppCSS.grisClaro,
       borderRadius: BorderRadius.circular(8),
     ),
   );
@@ -272,13 +272,13 @@ class _CitaCard extends StatelessWidget {
     final esCreador = user?.email == cita.email;
 
     return Container(
-      padding: AppConstantes.miwp,
+      padding: AppCSS.miwp,
       decoration: BoxDecoration(
-        color: AppColores.blanco,
-        borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+        color: AppCSS.blanco,
+        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
         boxShadow: [
           BoxShadow(
-            color: AppColores.verdePrimario.withOpacity(0.1),
+            color: AppCSS.verdePrimario.withOpacity(0.1),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -293,7 +293,7 @@ class _CitaCard extends StatelessWidget {
                 child: Text(
                   cita.libro ?? '—',
                   style: AppEstilos.subtitulo.copyWith(
-                    color: AppColores.verdePrimario,
+                    color: AppCSS.verdePrimario,
                   ),
                 ),
               ),
@@ -305,7 +305,7 @@ class _CitaCard extends StatelessWidget {
                         : Icons.star_border_outlined,
                     color: cita.favorito == true
                         ? Colors.amber
-                        : AppColores.grisOscuro,
+                        : AppCSS.grisOscuro,
                   ),
                   onPressed: onFav,
                 ),
@@ -319,21 +319,19 @@ class _CitaCard extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              Icon(Icons.person, size: 16, color: AppColores.gris),
+              Icon(Icons.person, size: 16, color: AppCSS.gris),
               const SizedBox(width: 6),
               Text(
                 cita.nombreShow ?? cita.usuario ?? '—',
-                style: AppEstilos.textoChico.copyWith(
-                  color: AppColores.grisOscuro,
-                ),
+                style: AppEstilos.textoChico.copyWith(color: AppCSS.grisOscuro),
               ),
               const Spacer(),
               Text(
                 cita.publico == true ? 'Pública' : 'Privada',
                 style: AppEstilos.textoChico.copyWith(
                   color: cita.publico == true
-                      ? AppColores.verdePrimario
-                      : AppColores.gris,
+                      ? AppCSS.verdePrimario
+                      : AppCSS.gris,
                   fontWeight: FontWeight.w600,
                 ),
               ),

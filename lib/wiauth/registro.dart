@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../widev.dart';
+import 'wiauth.dart';
 import '../pantallas/principal.dart';
+import '../../wii.dart';
 import 'auth_fb.dart';
 import 'firestore_fb.dart';
 import 'usuario.dart';
@@ -57,10 +58,10 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   void _configurarListeners() {
     // 🧹 Sanitización automática - COMPACTO
     _controllers['email']!.addListener(
-      () => _sanitizar('email', AppFormatos.email),
+      () => _sanitizar('email', AuthFormatos.email),
     );
     _controllers['usuario']!.addListener(
-      () => _sanitizar('usuario', AppFormatos.usuario),
+      () => _sanitizar('usuario', AuthFormatos.usuario),
     );
 
     // 🎯 Validación en blur - COMPACTO
@@ -88,19 +89,21 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AuthColores.verdeClaro,
       appBar: AppBar(
-        title: Text('Registro', style: AppEstilos.textoBoton),
+        title: Text('Registro', style: AuthEstilos.textoBoton),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
-        padding: AppConstantes.miwp,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AuthConstantes.espacioMedio,
+        ),
         child: Form(
           key: _form,
           child: Column(
             children: [
               _construirLogo(),
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
 
               // 📧 Campos de validación - COMPACTOS
               _campoValidacion(
@@ -110,14 +113,14 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 Icons.email,
                 TextInputType.emailAddress,
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
               _campoValidacion(
                 'usuario',
                 'Usuario',
                 'Ingresa usuario',
                 Icons.person,
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
 
               // 📝 Campos normales - COMPACTOS
               Row(
@@ -140,7 +143,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                   ),
                 ],
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
 
               _campoNormal(
                 'grupo',
@@ -148,7 +151,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 'familia, amigos, trabajo',
                 Icons.group,
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
 
               // 🚻 Género - COMPACTO
               DropdownButtonFormField<String>(
@@ -168,7 +171,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                     .toList(),
                 onChanged: (v) => setState(() => _genero = v!),
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
 
               // 🔒 Contraseñas - COMPACTAS
               _campoPassword(
@@ -177,17 +180,17 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 _verPassword,
                 () => setState(() => _verPassword = !_verPassword),
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
               _campoPassword(
                 'confirmPassword',
                 'Confirmar Contraseña',
                 _verConfirm,
                 () => setState(() => _verConfirm = !_verConfirm),
               ),
-              AppConstantes.espacioGrandeWidget,
-              // 📝 AGREGAR: Checkbox Términos y Condiciones
+              AuthConstantes.espacioGrandeWidget,
+              // 📝 Checkbox Términos y Condiciones
               _checkboxTerminos(),
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
               // 🎯 Botón - COMPACTO
               SizedBox(
                 width: double.infinity,
@@ -207,21 +210,21 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _colorBoton(),
                     foregroundColor: _colorTextoBoton(),
-                    disabledBackgroundColor: AppColores.verdeSuave,
-                    disabledForegroundColor: AppColores.textoOscuro,
+                    disabledBackgroundColor: AuthColores.verdeSuave,
+                    disabledForegroundColor: AuthColores.textoOscuro,
                     padding: EdgeInsets.symmetric(
-                      vertical: AppConstantes.espacioMedio,
+                      vertical: AuthConstantes.espacioMedio,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
-                        AppConstantes.radioMedio,
+                        AuthConstantes.radioMedio,
                       ),
                     ),
                     elevation: _cargando ? 0 : 2,
                   ),
                 ),
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
 
               // 🔗 ENLACE CORTITO Y CENTRADO
               TextButton(
@@ -231,14 +234,14 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 ),
                 child: Text(
                   '¿Ya tienes cuenta? Inicia sesión',
-                  style: AppEstilos.textoNormal.copyWith(
-                    color: AppColores.enlace, // 🔥 Nuevo color
+                  style: AuthEstilos.textoNormal.copyWith(
+                    color: AuthColores.enlace,
                   ),
-                  textAlign: TextAlign.center, // 🔥 Centrado
+                  textAlign: TextAlign.center,
                 ),
               ),
 
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
             ],
           ),
         ),
@@ -246,13 +249,13 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
     );
   }
 
-  // 📝 AGREGAR: Checkbox términos - COMPACTO
+  // 📝 Checkbox términos - COMPACTO
   Widget _checkboxTerminos() => Row(
     children: [
       Checkbox(
         value: _aceptoTerminos,
         onChanged: (v) => setState(() => _aceptoTerminos = v ?? false),
-        activeColor: AppColores.verdePrimario,
+        activeColor: AuthColores.verdePrimario,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       Expanded(
@@ -264,12 +267,12 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
           child: Text.rich(
             TextSpan(
               text: 'Acepto ',
-              style: AppEstilos.textoNormal,
+              style: AuthEstilos.textoNormal,
               children: [
                 TextSpan(
                   text: 'términos y condiciones',
-                  style: AppEstilos.textoNormal.copyWith(
-                    color: AppColores.enlace,
+                  style: AuthEstilos.textoNormal.copyWith(
+                    color: AuthColores.enlace,
                   ),
                 ),
               ],
@@ -283,13 +286,13 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   // 🎨 Logo - USANDO CONSTANTE
   Widget _construirLogo() => Container(
     width: double.infinity,
-    padding: AppConstantes.miwpL,
+    padding: const EdgeInsets.all(AuthConstantes.espacioGrande),
     decoration: BoxDecoration(
-      color: AppColores.verdeSuave,
-      borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+      color: AuthColores.verdeSuave,
+      borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
       boxShadow: [
         BoxShadow(
-          color: AppColores.verdePrimario.withOpacity(0.2),
+          color: AuthColores.verdePrimario.withOpacity(0.2),
           blurRadius: 10,
           offset: Offset(0, 5),
         ),
@@ -297,10 +300,10 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
     ),
     child: Column(
       children: [
-        AppConstantes.miLogoCircular,
-        AppConstantes.espacioChicoWidget,
-        Text(AppConstantes.nombreApp, style: AppEstilos.tituloMedio),
-        Text('Únete a la familia smile 😊', style: AppEstilos.textoNormal),
+        AuthConstantes.logoCircular,
+        AuthConstantes.espacioChicoWidget,
+        Text('${wii.app}', style: AuthEstilos.subtitulo),
+        Text('Únete a la familia smile 😊', style: AuthEstilos.textoNormal),
       ],
     ),
   );
@@ -321,8 +324,10 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       controller: _controllers[key]!,
       focusNode: _focusNodes[key],
       keyboardType: keyboard,
-      validator: key == 'email' ? AppValidadores.email : AppValidadores.usuario,
-      style: AppEstilos.textoNormal,
+      validator: key == 'email'
+          ? AuthValidadores.email
+          : AuthValidadores.usuario,
+      style: AuthEstilos.textoNormal,
       inputFormatters: key == 'email'
           ? [FilteringTextInputFormatter.deny(RegExp(r'\s'))]
           : key == 'usuario'
@@ -331,35 +336,51 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
               LowerCaseTextFormatter(),
             ]
           : null,
-      decoration: tieneError
-          ? VdError.decoration(
-              label: label,
-              hint: hint,
-              icon: icon,
-              suffixIcon: validando ? AppWidgets.cargando(size: 12) : null,
-            )
-          : esExito
-          ? VdGreen.decoration(
-              label: label,
-              hint: hint,
-              icon: icon,
-              suffixIcon: validando ? AppWidgets.cargando(size: 12) : null,
-            )
-          : _decoracion(
-              label,
-              hint,
-              icon,
-              validando
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3.5,
-                        color: AppColores.verdePrimario,
-                      ),
-                    )
-                  : null,
+      decoration:
+          _decoracion(
+            label,
+            hint,
+            icon,
+            validando
+                ? SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3.5,
+                      color: tieneError
+                          ? AuthColores.error
+                          : esExito
+                          ? AuthColores.verdePrimario
+                          : AuthColores.gris,
+                    ),
+                  )
+                : tieneError
+                ? Icon(Icons.error, color: AuthColores.error)
+                : esExito
+                ? Icon(Icons.check_circle, color: AuthColores.verdePrimario)
+                : null,
+          ).copyWith(
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
+              borderSide: BorderSide(
+                color: tieneError
+                    ? AuthColores.error
+                    : esExito
+                    ? AuthColores.verdePrimario
+                    : AuthColores.gris,
+                width: tieneError || esExito ? 2 : 1,
+              ),
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
+              borderSide: BorderSide(
+                color: tieneError
+                    ? AuthColores.error
+                    : AuthColores.verdePrimario,
+                width: 2,
+              ),
+            ),
+          ),
     );
   }
 
@@ -371,8 +392,8 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
     IconData? icon,
   ]) => TextFormField(
     controller: _controllers[key]!,
-    validator: (v) => AppValidadores.requerido(v, label),
-    style: AppEstilos.textoNormal,
+    validator: (v) => v?.trim().isEmpty ?? true ? '$label requerido' : null,
+    style: AuthEstilos.textoNormal,
     decoration: _decoracion(label, hint, icon ?? Icons.edit),
   );
 
@@ -386,9 +407,9 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
     controller: _controllers[key]!,
     obscureText: !mostrar,
     validator: key == 'password'
-        ? AppValidadores.password
-        : (v) => AppValidadores.requerido(v, label),
-    style: AppEstilos.textoNormal,
+        ? AuthValidadores.password
+        : (v) => v?.trim().isEmpty ?? true ? '$label requerido' : null,
+    style: AuthEstilos.textoNormal,
     decoration: _decoracion(
       label,
       '••••••••',
@@ -396,7 +417,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       IconButton(
         icon: Icon(
           mostrar ? Icons.visibility : Icons.visibility_off,
-          color: AppColores.verdePrimario,
+          color: AuthColores.verdePrimario,
         ),
         onPressed: onToggle,
       ),
@@ -412,14 +433,14 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   ]) => InputDecoration(
     labelText: label,
     hintText: hint,
-    prefixIcon: Icon(icon, color: AppColores.verdePrimario),
+    prefixIcon: Icon(icon, color: AuthColores.verdePrimario),
     suffixIcon: suffixIcon,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+      borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
-      borderSide: BorderSide(color: AppColores.verdePrimario, width: 2),
+      borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
+      borderSide: BorderSide(color: AuthColores.verdePrimario, width: 2),
     ),
     filled: true,
     fillColor: Colors.white,
@@ -432,13 +453,13 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       ? 'Registrando...'
       : 'Crear Cuenta';
   Color _colorBoton() => _registroCompletado
-      ? AppColores.exito
+      ? AuthColores.verdePrimario
       : _puedeRegistrar()
-      ? AppColores.verdePrimario
-      : AppColores.verdeSuave;
+      ? AuthColores.verdePrimario
+      : AuthColores.verdeSuave;
   Color _colorTextoBoton() => _puedeRegistrar() || _registroCompletado
       ? Colors.white
-      : AppColores.textoOscuro;
+      : AuthColores.textoOscuro;
 
   // 🎯 Validación en blur - UNIVERSAL
   void _validarEnBlur(String tipo) async {
@@ -480,7 +501,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       _controllers.values.every((c) => c.text.isNotEmpty) &&
       _controllers['password']!.text.length >= 6 &&
       _controllers['confirmPassword']!.text == _controllers['password']!.text &&
-      _aceptoTerminos; // 🔥 AGREGAR ESTA LÍNEA
+      _aceptoTerminos;
 
   // 🚀 Registrar usuario - COMPACTO
   void _registrarUsuario() async {
@@ -511,20 +532,21 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
 
       // 4. ✅ Éxito
       setState(() => _registroCompletado = true);
-      _mostrarMensaje('¡Cuenta creada exitosamente! 🎉', AppColores.exito);
+      _mostrarMensaje(
+        '¡Cuenta creada exitosamente! 🎉',
+        AuthColores.verdePrimario,
+      );
 
-      await Future.delayed(AppConstantes.tiempoCarga);
+      await Future.delayed(AuthConstantes.animacionLenta);
       if (mounted)
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (_) => const PantallaPrincipal(),
-          ), // 🔥 CAMBIAR
+          MaterialPageRoute(builder: (_) => const PantallaPrincipal()),
         );
     } catch (e) {
       _mostrarMensaje(
         e.toString().replaceAll('Exception: ', ''),
-        AppColores.error,
+        AuthColores.error,
       );
     } finally {
       if (mounted) setState(() => _cargando = false);

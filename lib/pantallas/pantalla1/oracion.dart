@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../widev.dart';
+import '../../wicss.dart';
 
 class PantallaOracion extends StatefulWidget {
   const PantallaOracion({super.key});
@@ -33,35 +33,35 @@ class _PantallaOracionState extends State<PantallaOracion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AppCSS.verdeClaro,
       appBar: AppBar(
         title: Text('Oración', style: AppEstilos.textoBoton),
         centerTitle: true,
-        backgroundColor: AppColores.verdePrimario,
+        backgroundColor: AppCSS.verdePrimario,
         foregroundColor: Colors.white,
         automaticallyImplyLeading: false,
         elevation: 0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: AppConstantes.miwpL,
+          padding: AppCSS.miwpL,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+                borderRadius: BorderRadius.circular(AppCSS.radioMedio),
                 child: Image.asset(
                   'assets/images/jesus.webp',
                   fit: BoxFit.cover,
                 ),
               ),
-              AppConstantes.espacioGrandeWidget,
+              AppCSS.espacioGrandeWidget,
               Column(
                 children: [
                   Text(
                     'Padre Nuestro',
                     style: AppEstilos.tituloMedio.copyWith(
-                      color: AppColores.verdePrimario,
+                      color: AppCSS.verdePrimario,
                       fontWeight: FontWeight.w700,
                     ),
                     textAlign: TextAlign.center,
@@ -70,19 +70,19 @@ class _PantallaOracionState extends State<PantallaOracion> {
                   Text(
                     '(Teléfono de Dios)',
                     style: AppEstilos.textoNormal.copyWith(
-                      color: AppColores.verdeOscuro.withOpacity(0.8),
+                      color: AppCSS.verdeOscuro.withOpacity(0.8),
                       fontStyle: FontStyle.italic,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               Container(
-                padding: AppConstantes.miwp,
+                padding: AppCSS.miwp,
                 decoration: BoxDecoration(
-                  color: AppColores.verdeSuave,
-                  borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+                  color: AppCSS.verdeSuave,
+                  borderRadius: BorderRadius.circular(AppCSS.radioMedio),
                 ),
                 child: Text(
                   '''
@@ -101,12 +101,12 @@ y líbranos del mal.
 ''',
                   style: AppEstilos.textoNormal.copyWith(
                     height: 1.5,
-                    color: AppColores.verdeOscuro,
+                    color: AppCSS.verdeOscuro,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              AppConstantes.espacioGrandeWidget,
+              AppCSS.espacioGrandeWidget,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -121,7 +121,7 @@ y líbranos del mal.
                         Transform.scale(scale: scale, child: child),
                     child: Icon(
                       Icons.favorite,
-                      color: AppColores.verdePrimario,
+                      color: AppCSS.verdePrimario,
                       size: 48,
                     ),
                   ),
@@ -129,16 +129,14 @@ y líbranos del mal.
                   ElevatedButton.icon(
                     onPressed: _onAmen,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColores.verdePrimario,
+                      backgroundColor: AppCSS.verdePrimario,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 18,
                         vertical: 12,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppConstantes.radioMedio,
-                        ),
+                        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
                       ),
                     ),
                     icon: const Icon(Icons.volunteer_activism),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widev.dart';
+import 'wiauth.dart';
+import '../../wii.dart';
 
 class PantallaTerminos extends StatelessWidget {
   const PantallaTerminos({super.key});
@@ -7,29 +8,33 @@ class PantallaTerminos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AuthColores.verdeClaro,
       appBar: AppBar(
-        title: Text('Términos y Condiciones', style: AppEstilos.textoBoton),
+        title: Text('Términos y Condiciones', style: AuthEstilos.textoBoton),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
-        padding: AppConstantes.miwp,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AuthConstantes.espacioMedio,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            AuthConstantes.espacioMedioWidget,
+
             // 🎨 Header
             Container(
               width: double.infinity,
-              padding: AppConstantes.miwpL,
+              padding: const EdgeInsets.all(AuthConstantes.espacioGrande),
               decoration: BoxDecoration(
-                color: AppColores.verdeSuave,
-                borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+                color: AuthColores.verdeSuave,
+                borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColores.verdePrimario.withOpacity(0.2),
+                    color: AuthColores.verdePrimario.withOpacity(0.2),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -41,32 +46,32 @@ class PantallaTerminos extends StatelessWidget {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: AppColores.verdePrimario,
+                      color: AuthColores.verdePrimario,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(Icons.gavel, size: 40, color: Colors.white),
                   ),
-                  AppConstantes.espacioChicoWidget,
-                  Text('Términos y Condiciones', style: AppEstilos.tituloMedio),
+                  AuthConstantes.espacioChicoWidget,
+                  Text('Términos y Condiciones', style: AuthEstilos.subtitulo),
                   Text(
-                    '${AppConstantes.nombreApp} v${AppConstantes.version}',
-                    style: AppEstilos.textoNormal,
+                    '${wii.app}  ${wii.version}',
+                    style: AuthEstilos.textoNormal,
                   ),
                 ],
               ),
             ),
 
-            AppConstantes.espacioGrandeWidget,
+            AuthConstantes.espacioGrandeWidget,
 
             // 📝 Contenido de términos
             _seccionTerminos(
               '1. Aceptación de Términos',
-              'Al usar ${AppConstantes.nombreApp}, aceptas estos términos y condiciones en su totalidad. Si no estás de acuerdo, no uses la aplicación.',
+              'Al usar WiiHope, aceptas estos términos y condiciones en su totalidad. Si no estás de acuerdo, no uses la aplicación.',
             ),
 
             _seccionTerminos(
               '2. Uso de la Aplicación',
-              '${AppConstantes.nombreApp} es una aplicación para registrar y gestionar gastos personales y grupales. Úsala de manera responsable y legal.',
+              'WiiHope es una aplicación para registrar y gestionar gastos personales y grupales. Úsala de manera responsable y legal.',
             ),
 
             _seccionTerminos(
@@ -76,7 +81,7 @@ class PantallaTerminos extends StatelessWidget {
 
             _seccionTerminos(
               '4. Responsabilidades',
-              'Eres responsable de mantener segura tu cuenta y contraseña. ${AppConstantes.nombreApp} no se hace responsable por el uso no autorizado de tu cuenta.',
+              'Eres responsable de mantener segura tu cuenta y contraseña. WiiHope no se hace responsable por el uso no autorizado de tu cuenta.',
             ),
 
             _seccionTerminos(
@@ -94,35 +99,35 @@ class PantallaTerminos extends StatelessWidget {
               'Para preguntas sobre estos términos, contáctanos a través de la sección de ayuda en la aplicación.',
             ),
 
-            AppConstantes.espacioGrandeWidget,
+            AuthConstantes.espacioGrandeWidget,
 
             // 📅 Fecha
             Container(
               width: double.infinity,
-              padding: AppConstantes.miwp,
+              padding: const EdgeInsets.all(AuthConstantes.espacioMedio),
               decoration: BoxDecoration(
-                color: AppColores.verdeSuave.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(AppConstantes.radioChico),
+                color: AuthColores.verdeSuave.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(AuthConstantes.radioChico),
               ),
               child: Column(
                 children: [
-                  Icon(Icons.calendar_today, color: AppColores.verdePrimario),
-                  AppConstantes.espacioChicoWidget,
+                  Icon(Icons.calendar_today, color: AuthColores.verdePrimario),
+                  AuthConstantes.espacioChicoWidget,
                   Text(
                     'Última actualización: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                    style: AppEstilos.textoChico,
+                    style: AuthEstilos.textoChico,
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     'Al usar la app, aceptas estos términos automáticamente',
-                    style: AppEstilos.textoChico,
+                    style: AuthEstilos.textoChico,
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
 
-            AppConstantes.espacioGrandeWidget,
+            AuthConstantes.espacioGrandeWidget,
 
             // 🔗 Botón volver
             SizedBox(
@@ -132,20 +137,20 @@ class PantallaTerminos extends StatelessWidget {
                 icon: Icon(Icons.check_circle),
                 label: Text('Entendido'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColores.verdePrimario,
+                  backgroundColor: AuthColores.verdePrimario,
                   padding: EdgeInsets.symmetric(
-                    vertical: AppConstantes.espacioMedio,
+                    vertical: AuthConstantes.espacioMedio,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
-                      AppConstantes.radioMedio,
+                      AuthConstantes.radioMedio,
                     ),
                   ),
                 ),
               ),
             ),
 
-            AppConstantes.espacioGrandeWidget,
+            AuthConstantes.espacioGrandeWidget,
           ],
         ),
       ),
@@ -154,24 +159,24 @@ class PantallaTerminos extends StatelessWidget {
 
   // 📝 Widget para cada sección - REUTILIZABLE
   Widget _seccionTerminos(String titulo, String contenido) => Container(
-    margin: EdgeInsets.only(bottom: AppConstantes.espacioMedio),
+    margin: EdgeInsets.only(bottom: AuthConstantes.espacioMedio),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           titulo,
-          style: AppEstilos.subtitulo.copyWith(
-            color: AppColores.verdePrimario,
+          style: AuthEstilos.subtitulo.copyWith(
+            color: AuthColores.verdePrimario,
             fontWeight: FontWeight.w600,
           ),
         ),
-        AppConstantes.espacioChicoWidget,
+        AuthConstantes.espacioChicoWidget,
         Text(
           contenido,
-          style: AppEstilos.textoNormal,
+          style: AuthEstilos.textoNormal,
           textAlign: TextAlign.justify,
         ),
-        AppConstantes.espacioMedioWidget,
+        AuthConstantes.espacioMedioWidget,
       ],
     ),
   );

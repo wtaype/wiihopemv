@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
-import '../widev.dart';
+import 'wiauth.dart';
 import 'firestore_fb.dart';
-import 'usuario.dart'; // 🔥 AGREGAR
+import 'usuario.dart';
 
 class AuthServicio {
   static final _auth = FirebaseAuth.instance;
@@ -15,19 +15,19 @@ class AuthServicio {
   static Future<User> crearCuenta(String email, String password) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
-        email: AppFormatos.email(email),
+        email: AuthFormatos.email(email),
         password: password,
       );
       return credential.user!;
     } on FirebaseAuthException catch (e) {
-      throw Exception(AppFirebase.mensajeError(e.code));
+      throw Exception(AuthFirebase.mensajeError(e.code));
     }
   }
 
   // 🔑 Login - COMPACTO
   static Future<User> login(String emailOUsuario, String password) async {
     try {
-      String email = AppFormatos.email(emailOUsuario);
+      String email = AuthFormatos.email(emailOUsuario);
 
       // Si no es email, buscar por usuario - COMPACTO
       if (!EmailValidator.validate(emailOUsuario)) {
@@ -50,7 +50,7 @@ class AuthServicio {
 
       return credential.user!;
     } on FirebaseAuthException catch (e) {
-      throw Exception(AppFirebase.mensajeError(e.code));
+      throw Exception(AuthFirebase.mensajeError(e.code));
     }
   }
 
@@ -60,19 +60,19 @@ class AuthServicio {
   // 🔄 Restablecer contraseña - COMPACTO
   static Future<void> restablecerPassword(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: AppFormatos.email(email));
+      await _auth.sendPasswordResetEmail(email: AuthFormatos.email(email));
     } on FirebaseAuthException catch (e) {
-      throw Exception(AppFirebase.mensajeError(e.code));
+      throw Exception(AuthFirebase.mensajeError(e.code));
     }
   }
 
-  // 🔑 Login MEJORADO - AGREGAR ESTE MÉTODO
+  // 🔑 Login MEJORADO
   static Future<Usuario> loginMejorado(
     String emailOUsuario,
     String password,
   ) async {
     try {
-      String email = AppFormatos.emailOUsuario(emailOUsuario);
+      String email = AuthFormatos.emailOUsuario(emailOUsuario);
       Usuario? usuarioCompleto;
 
       // Si no es email, buscar por usuario
@@ -100,7 +100,7 @@ class AuthServicio {
 
       return usuarioCompleto;
     } on FirebaseAuthException catch (e) {
-      throw Exception(AppFirebase.mensajeError(e.code));
+      throw Exception(AuthFirebase.mensajeError(e.code));
     }
   }
 }

@@ -1,590 +1,243 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
+import 'wicss.dart';
 
-// 🎨 Nuestra paleta de colores completa
-class AppColores {
-  // 🌿 Verdes gorditos y bonitos
-  static const Color verdePrimario = Color(0xFF4CAF50);
-  static const Color verdeSecundario = Color(0xFF81C784);
-  static const Color verdeClaro = Color(0xFFB9F6CA);
-  static const Color verdeSuave = Color(0xFFE8F5E8);
+// ═══════════════════════════════════════════════════════════════════
+// 🎯 WIDGETS REUTILIZABLES - Sistema de componentes
+// ═══════════════════════════════════════════════════════════════════
 
-  // 🖤 Textos
-  static const Color textoOscuro = Color(0xFF2E2E2E);
-  static const Color textoVerde = Color(0xFF388E3C);
-  static const Color verdeOscuro = Color(0xFF388E3C);
-  static const Color blanco = Colors.white;
+// 🎯 Botón principal que usamos mucho
+class BotonPrincipal extends StatelessWidget {
+  final String texto;
+  final VoidCallback alPresionar;
+  final IconData? icono;
+  final bool estaCargando;
+  final Color? colorFondo;
 
-  // 🔗 NUEVO: Color para enlaces
-  static const Color enlace = Color(0xFF4CAF50); // 🔥 Verde para enlaces
+  const BotonPrincipal({
+    super.key,
+    required this.texto,
+    required this.alPresionar,
+    this.icono,
+    this.estaCargando = false,
+    this.colorFondo,
+  });
 
-  // 🚨 Estados y mensajes
-  static const Color error = Color(0xFFE53935);
-  static const Color exito = Color(0xFF4CAF50);
-  static const Color advertencia = Color(0xFFFF9800);
-  static const Color info = Color(0xFF2196F3);
-
-  // 🎨 UI adicionales
-  static const Color gris = Color(0xFF9E9E9E);
-  static const Color grisClaro = Color(0xFFF5F5F5);
-  static const Color grisOscuro = Color(0xFF424242);
-
-  // 🌟 Extras para casos especiales
-  static const Color transparente = Colors.transparent;
-  static const Color sombra = Color(0x1A000000);
-}
-
-// 🎭 Nuestro "CSS root" - ¡Poppins centralizado!
-class AppEstilos {
-  static ThemeData get temaApp => ThemeData(
-    scaffoldBackgroundColor: AppColores.verdeClaro,
-    primarySwatch: Colors.green,
-
-    // 🎭 ¡Fuente por defecto para TODA la app!
-    fontFamily: GoogleFonts.poppins().fontFamily, // Como tu * en CSS
-    // 📱 AppBar theme
-    appBarTheme: AppBarTheme(
-      backgroundColor: AppColores.verdePrimario,
-      foregroundColor: AppColores.blanco,
-      elevation: 4.0,
-      toolbarHeight: 45.0,
-      titleTextStyle: textoBoton,
-      centerTitle: true,
-      iconTheme: IconThemeData(color: AppColores.blanco, size: 22.0),
-      shadowColor: AppColores.verdePrimario.withOpacity(0.3),
-    ),
-
-    // 🎯 Text theme
-    textTheme: TextTheme(
-      headlineLarge: tituloGrande,
-      headlineMedium: tituloMedio,
-      titleLarge: subtitulo,
-      bodyLarge: textoNormal,
-      bodyMedium: textoChico,
-    ),
-
-    elevatedButtonTheme: ElevatedButtonThemeData(
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: estaCargando ? null : alPresionar,
+      icon: estaCargando
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : Icon(icono ?? Icons.check),
+      label: Text(texto),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColores.verdePrimario,
-        foregroundColor: AppColores.blanco,
-        textStyle: textoBoton,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: colorFondo ?? AppCSS.verdePrimario,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppCSS.espacioGrande,
+          vertical: AppCSS.espacioMedio,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+        ),
       ),
-    ),
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-  );
-
-  // 📝 Títulos gorditos
-  static TextStyle get tituloGrande => GoogleFonts.poppins(
-    fontSize: 32,
-    fontWeight: FontWeight.w600,
-    color: AppColores.textoVerde,
-  );
-
-  static TextStyle get tituloMedio => GoogleFonts.poppins(
-    fontSize: 24,
-    fontWeight: FontWeight.w600,
-    color: AppColores.textoVerde,
-  );
-
-  static TextStyle get subtitulo => GoogleFonts.poppins(
-    fontSize: 18,
-    fontWeight: FontWeight.w500,
-    color: AppColores.textoOscuro,
-  );
-
-  // 📱 Textos normales
-  static TextStyle get textoNormal => GoogleFonts.poppins(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-    color: AppColores.textoOscuro,
-  );
-
-  static TextStyle get textoChico => GoogleFonts.poppins(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: AppColores.textoOscuro,
-  );
-
-  static TextStyle get icoSM => GoogleFonts.poppins(
-    fontSize: 13,
-    fontWeight: FontWeight.w500,
-    color: AppColores.textoOscuro,
-  );
-
-  static TextStyle get txtSM => GoogleFonts.poppins(
-    fontSize: 11,
-    fontWeight: FontWeight.w500,
-    color: AppColores.textoOscuro,
-  );
-
-  // 🎯 Botones
-  static TextStyle get textoBoton => GoogleFonts.poppins(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: AppColores.blanco,
-  );
+    );
+  }
 }
 
-// 🎯 Clases de validación visual
-class VdError {
-  static const Color borde = Color(0xFFE53935);
-  static const Color texto = Color(0xFFD32F2F);
-  static const Color fondo = Color(0xFFFFEBEE);
-  static const Color icono = Color(0xFFE53935);
+// 📝 Campo de texto guapo en español
+class CampoTexto extends StatelessWidget {
+  final String etiqueta;
+  final String? pista;
+  final IconData? icono;
+  final bool esContrasena;
+  final TextEditingController? controlador;
+  final String? Function(String?)? validador;
+  final TextInputType tipoTeclado;
 
-  // 🔥 InputDecoration lista para usar
-  static InputDecoration decoration({
-    required String label,
-    required String hint,
-    required IconData icon,
-    Widget? suffixIcon,
-  }) => InputDecoration(
-    labelText: label,
-    hintText: hint,
-    prefixIcon: Icon(icon, color: icono),
-    suffixIcon: suffixIcon,
-    labelStyle: TextStyle(color: texto),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borde, width: 2),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borde, width: 2),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borde, width: 2),
-    ),
-    filled: true,
-    fillColor: fondo,
-  );
-}
+  const CampoTexto({
+    super.key,
+    required this.etiqueta,
+    this.pista,
+    this.icono,
+    this.esContrasena = false,
+    this.controlador,
+    this.validador,
+    this.tipoTeclado = TextInputType.text,
+  });
 
-class VdGreen {
-  static const Color borde = Color(0xFF4CAF50);
-  static const Color texto = Color(0xFF2E7D32);
-  static const Color fondo = Color(0xFFE8F5E8);
-  static const Color icono = Color(0xFF4CAF50);
-
-  // 🔥 InputDecoration lista para usar
-  static InputDecoration decoration({
-    required String label,
-    required String hint,
-    required IconData icon,
-    Widget? suffixIcon,
-  }) => InputDecoration(
-    labelText: label,
-    hintText: hint,
-    prefixIcon: Icon(icon, color: icono),
-    suffixIcon: suffixIcon,
-    labelStyle: TextStyle(color: texto),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borde, width: 2),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borde, width: 2),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borde, width: 2),
-    ),
-    filled: true,
-    fillColor: fondo,
-  );
-}
-
-// CONSTANTES
-class AppConstantes {
-  // 🏠 Información de la app
-  static const String nombreApp = 'WiiHope';
-  static const String creadoBy = 'Con mucho amor';
-  static const String version = '1.0.0';
-  static const String descripcion = 'La mejor app para registrar gastos';
-
-  // 🎨 ASSETS CONSTANTES - ¡Una línea limpia para usar!
-  static const String _logoPath = 'assets/images/logo.png';
-  static const String logoSmile = 'assets/images/smile.png';
-
-  // 🖼️ Widgets de imagen listos para usar (más eficiente)
-  static Widget get miLogo => Image.asset(
-    _logoPath,
-    width: 80,
-    height: 80,
-    fit: BoxFit.cover,
-    errorBuilder: (_, __, ___) =>
-        Icon(Icons.account_circle, size: 80, color: verdePrimario),
-  );
-
-  // 🎨 Logo circular para usar directo
-  static Widget get miLogoCircular => Container(
-    width: 80,
-    height: 80,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: verdePrimario.withOpacity(0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 3),
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controlador,
+      obscureText: esContrasena,
+      validator: validador,
+      keyboardType: tipoTeclado,
+      style: AppEstilos.textoNormal,
+      decoration: InputDecoration(
+        labelText: etiqueta,
+        hintText: pista,
+        prefixIcon: icono != null
+            ? Icon(icono, color: AppCSS.verdePrimario)
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+          borderSide: BorderSide(color: AppCSS.verdeSecundario),
         ),
-      ],
-    ),
-    child: ClipOval(child: miLogo),
-  );
-
-  // 🎨 Colores básicos (para no importar el archivo completo)
-  static const Color verdePrimario = Color(0xFF4CAF50);
-  static const Color verdeSecundario = Color(0xFF81C784);
-  static const Color verdeClaro = Color(0xFFB9F6CA);
-  static const Color verdeSuave = Color(0xFFE8F5E8);
-
-  // 📱 Textos que usamos actualmente
-  static const String bienvenida = '¡Dios te ama bro! 😎';
-  static const String cargando = 'Ingresando al mejor app...';
-  static const String error = 'Algo salió mal';
-  static const String sinInternet = 'Sin conexión a internet';
-
-  // 🎨 Espaciados
-  static const double espacioChico = 8.0;
-  static const double espacioMedio = 16.0;
-  static const double espacioGrande = 24.0;
-  static const double espacioGigante = 32.0;
-
-  // 📐 Radios
-  static const double radioChico = 8.0;
-  static const double radioMedio = 12.0;
-  static const double radioGrande = 16.0;
-
-  // ⏱️ Duraciones
-  static const Duration animacionRapida = Duration(milliseconds: 300);
-  static const Duration animacionLenta = Duration(milliseconds: 600);
-  static const Duration tiempoCarga = Duration(seconds: 3);
-
-  // 📱 Padding estándar
-  static const EdgeInsets miwp = EdgeInsets.symmetric(
-    vertical: 9.0,
-    horizontal: 10.0,
-  );
-
-  // 🎨 Otros paddings útiles
-  static const EdgeInsets miwpL = EdgeInsets.symmetric(
-    vertical: 15.0,
-    horizontal: 20.0,
-  );
-
-  static const EdgeInsets miwpM = EdgeInsets.only(
-    top: 10.0,
-    bottom: 15.0,
-    right: 10.0,
-    left: 10.0,
-  );
-
-  // 🔥 NUEVOS: Paddings para registrar
-  static const EdgeInsets miwpS = EdgeInsets.all(
-    espacioChico,
-  ); // 8px todos lados
-  static const EdgeInsets miwpXL = EdgeInsets.all(
-    espacioGigante,
-  ); // 32px todos lados
-
-  // 🎯 Iconos comunes
-  static Widget get iconoUsuario => Icon(Icons.person, color: verdePrimario);
-  static Widget get iconoEmail => Icon(Icons.email, color: verdePrimario);
-  static Widget get iconoCargando =>
-      CircularProgressIndicator(color: verdePrimario);
-
-  // 🎨 Espaciadores comunes
-  static Widget get espacioChicoWidget => SizedBox(height: espacioChico);
-  static Widget get espacioMedioWidget => SizedBox(height: espacioMedio);
-  static Widget get espacioGrandeWidget => SizedBox(height: espacioGrande);
-}
-
-class AppValidadores {
-  // 🔥 Validadores reutilizables MEJORADOS
-  static String? email(String? value) {
-    if (value?.trim().isEmpty ?? true) return 'Email requerido';
-    if (!EmailValidator.validate(value!)) return 'Email inválido';
-    return null;
-  }
-
-  static String? usuario(String? value) {
-    if (value?.trim().isEmpty ?? true) return 'Usuario requerido';
-    if (value!.length < 3) return 'Mínimo 3 caracteres';
-    if (!RegExp(r'^[a-z0-9_]+$').hasMatch(value))
-      return 'Solo letras, números y _';
-    return null;
-  }
-
-  static String? password(String? value) {
-    if (value?.isEmpty ?? true) return 'Contraseña requerida';
-    if (value!.length < 6) return 'Mínimo 6 caracteres';
-    return null;
-  }
-
-  // 🔥 NUEVO: Validador para login (más flexible)
-  static String? passwordLogin(String? value) {
-    if (value?.isEmpty ?? true) return 'Contraseña requerida';
-    return null; // No validar longitud en login
-  }
-
-  // 🔥 NUEVO: Validador para email o usuario
-  static String? emailOUsuario(String? value) {
-    if (value?.trim().isEmpty ?? true) return 'Email o usuario requerido';
-    if (value!.length < 3) return 'Mínimo 3 caracteres';
-    return null;
-  }
-
-  static String? requerido(String? value, String campo) =>
-      value?.trim().isEmpty ?? true ? '$campo requerido' : null;
-
-  // 🔥 NUEVOS: Validadores para gastos
-  static String? monto(String? value) {
-    if (value?.trim().isEmpty ?? true) return 'Monto requerido';
-    final numero = double.tryParse(value!);
-    if (numero == null) return 'Ingresa un número válido';
-    if (numero <= 0) return 'El monto debe ser mayor a 0';
-    if (numero > 999999) return 'Monto muy alto';
-    return null;
-  }
-
-  static String? nombreGasto(String? value) {
-    if (value?.trim().isEmpty ?? true) return 'Nombre requerido';
-    if (value!.length < 2) return 'Mínimo 2 caracteres';
-    if (value.length > 50) return 'Máximo 50 caracteres';
-    return null;
-  }
-}
-
-class AppFirebase {
-  // 🔥 Configuración centralizada
-  static const String coleccionUsuarios = 'smiles';
-  static const String coleccionGastos = 'gastos'; // 🔥 NUEVO
-  static const String coleccionSugerencias = 'wisugerencias'; // 🔥 NUEVO
-  static const int timeoutSegundos = 30;
-  static const Duration delayVerificacion = Duration(milliseconds: 300);
-
-  // 🎯 Mensajes de error centralizados
-  static const Map<String, String> erroresAuth = {
-    'email-already-in-use': 'Email ya registrado',
-    'weak-password': 'Contraseña muy débil',
-    'invalid-email': 'Email inválido',
-    'user-not-found': 'Usuario no encontrado',
-    'wrong-password': 'Contraseña incorrecta',
-    'network-request-failed': 'Sin conexión a internet',
-  };
-
-  static String mensajeError(String codigo) =>
-      erroresAuth[codigo] ?? 'Email o usuario no existe';
-
-  // 🎯 Mensajes de éxito - AGREGAR ESTO
-  static const Map<String, String> mensajesExito = {
-    'registro': '¡Cuenta creada exitosamente! 🎉',
-    'login': '¡Bienvenido de vuelta! 😊',
-    'logout': '¡Hasta pronto! 👋',
-    'password-reset': 'Email de recuperación enviado 📧',
-    'gasto-guardado': '¡Gasto registrado exitosamente! 💰', // 🔥 NUEVO
-    'gasto-actualizado': '¡Gasto actualizado! ✅', // 🔥 NUEVO
-    'sugerencia-guardada': '¡Sugerencia guardada! 💡', // 🔥 NUEVO
-  };
-
-  static String mensajeExito(String tipo) =>
-      mensajesExito[tipo] ?? '¡Operación exitosa!';
-}
-
-class AppFormatos {
-  // 🧹 Sanitizadores reutilizables MEJORADOS
-  static String email(String text) =>
-      text.toLowerCase().replaceAll(RegExp(r'\s+'), '');
-
-  static String usuario(String text) => text
-      .toLowerCase()
-      .replaceAll(RegExp(r'\s+'), '')
-      .replaceAll(RegExp(r'[^a-z0-9_]'), '');
-
-  // 🔥 NUEVO: Formatear email o usuario para login
-  static String emailOUsuario(String text) {
-    // Si contiene @, tratarlo como email
-    if (text.contains('@')) {
-      return email(text);
-    }
-    // Si no, tratarlo como usuario
-    return usuario(text);
-  }
-
-  static String texto(String text) => text.trim();
-
-  static String grupo(String text) => text.toLowerCase().trim();
-
-  // 🔥 NUEVOS: Formateadores para gastos
-  static String nombreGasto(String text) => text.trim().toLowerCase();
-
-  static double monto(String text) {
-    final sanitizado = text.replaceAll(RegExp(r'[^0-9.]'), '');
-    return double.tryParse(sanitizado) ?? 0.0;
-  }
-
-  static String montoTexto(double valor) => valor.toStringAsFixed(2);
-}
-
-class AppWidgets {
-  // 🎨 Widgets preconstruidos
-  static Widget cargando({double size = 20}) => SizedBox(
-    width: size,
-    height: size,
-    child: CircularProgressIndicator(strokeWidth: 2),
-  );
-
-  static Widget espaciador(double altura) => SizedBox(height: altura);
-
-  static Widget logoCircular() => Container(
-    width: 80,
-    height: 80,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: AppColores.verdePrimario.withOpacity(0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 3),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+          borderSide: BorderSide(color: AppCSS.verdePrimario, width: 2),
         ),
-      ],
-    ),
-    child: ClipOval(child: AppConstantes.miLogo),
-  );
+        filled: true,
+        fillColor: AppCSS.blanco,
+      ),
+    );
+  }
 }
 
-// 🔥 NUEVA SECCIÓN: Frases motivacionales para header de registrar
-class FrasesMotivacionales {
-  static const List<Map<String, String>> lista = [
-    {
-      'frase': 'El dinero es un buen servidor, pero un mal maestro.',
-      'autor': 'Francis Bacon',
-    },
-    {
-      'frase':
-          'No ahorres lo que te queda después de gastar, gasta lo que te queda después de ahorrar.',
-      'autor': 'Warren Buffett',
-    },
-    {
-      'frase': 'El precio es lo que pagas. El valor es lo que obtienes.',
-      'autor': 'Warren Buffett',
-    },
-    {
-      'frase': 'Un centavo ahorrado es un centavo ganado.',
-      'autor': 'Benjamin Franklin',
-    },
-    {
-      'frase':
-          'La riqueza no es acerca de tener mucho dinero; es acerca de tener muchas opciones.',
-      'autor': 'Chris Rock',
-    },
-    {
-      'frase': 'El hábito de ahorrar dinero requiere solo determinación.',
-      'autor': 'Napoleon Hill',
-    },
-    {
-      'frase':
-          'No gastes dinero que no tienes para comprar cosas que no necesitas.',
-      'autor': 'Dave Ramsey',
-    },
-    {'frase': 'El dinero nunca duerme.', 'autor': 'Gordon Gekko'},
-    {
-      'frase': 'La inversión en conocimiento paga los mejores intereses.',
-      'autor': 'Benjamin Franklin',
-    },
-    {
-      'frase': 'Quien controla su dinero, controla su vida.',
-      'autor': 'Tony Robbins',
-    },
-    {
-      'frase':
-          'El dinero es como un sexto sentido sin el cual no puedes usar los otros cinco.',
-      'autor': 'W. Somerset Maugham',
-    },
-    {
-      'frase': 'La disciplina financiera es la base de la libertad financiera.',
-      'autor': 'Robert Kiyosaki',
-    },
-    {
-      'frase': 'No es cuánto dinero ganas, es cuánto dinero conservas.',
-      'autor': 'Robert Kiyosaki',
-    },
-    {
-      'frase': 'Los gastos pequeños hunden barcos grandes.',
-      'autor': 'Benjamin Franklin',
-    },
-    {
-      'frase': 'Presupuesta tu dinero antes de gastarlo.',
-      'autor': 'Dave Ramsey',
-    },
-    {
-      'frase': 'El dinero que ahorras es el dinero que ganas.',
-      'autor': 'Danish Proverb',
-    },
-    {
-      'frase': 'Vive como nadie más ahora, para vivir como nadie más después.',
-      'autor': 'Dave Ramsey',
-    },
-    {'frase': 'El tiempo es más valioso que el dinero.', 'autor': 'Jim Rohn'},
-  ];
+// 💳 Tarjeta bonita para mostrar información
+class TarjetaInformacion extends StatelessWidget {
+  final Widget contenido;
+  final VoidCallback? alTocar;
+  final Color? colorFondo;
+  final double? elevacion;
 
-  // 🎯 Obtener frase aleatoria
-  static Map<String, String> obtenerFraseAleatoria() {
-    final indice = DateTime.now().millisecondsSinceEpoch % lista.length;
-    return lista[indice];
+  const TarjetaInformacion({
+    super.key,
+    required this.contenido,
+    this.alTocar,
+    this.colorFondo,
+    this.elevacion = 4,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: elevacion,
+      color: colorFondo,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+      ),
+      child: InkWell(
+        onTap: alTocar,
+        borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+        child: Padding(
+          padding: const EdgeInsets.all(AppCSS.espacioMedio),
+          child: contenido,
+        ),
+      ),
+    );
   }
+}
 
-  // 🎯 Obtener frase por índice (para consistencia durante la sesión)
-  static Map<String, String> obtenerFrasePorIndice(int indice) {
-    return lista[indice % lista.length];
-  }
+// 😢 Widget para cuando no hay datos disponibles
+class SinDatos extends StatelessWidget {
+  final String mensaje;
+  final IconData icono;
+  final String? textoBoton;
+  final VoidCallback? accionBoton;
 
-  // 🎯 Widget frase formateada para header
-  static Widget widgetFrase({
-    double altura = 90,
-    TextStyle? estiloFrase,
-    TextStyle? estiloAutor,
-  }) {
-    final fraseData = obtenerFraseAleatoria();
-    return Container(
-      height: altura,
-      padding: AppConstantes.miwpM,
+  const SinDatos({
+    super.key,
+    required this.mensaje,
+    this.icono = Icons.inbox,
+    this.textoBoton,
+    this.accionBoton,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Text(
-              '"${fraseData['frase']}"',
-              style:
-                  estiloFrase ??
-                  AppEstilos.textoNormal.copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 14,
-                  ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          AppConstantes.espacioChicoWidget,
+          Icon(icono, size: 80, color: AppCSS.verdeSecundario),
+          const SizedBox(height: AppCSS.espacioMedio),
           Text(
-            '- ${fraseData['autor']}',
-            style:
-                estiloAutor ??
-                AppEstilos.textoChico.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColores.verdePrimario,
-                ),
+            mensaje,
+            style: AppEstilos.subtitulo,
             textAlign: TextAlign.center,
           ),
+          if (textoBoton != null && accionBoton != null) ...[
+            const SizedBox(height: AppCSS.espacioGrande),
+            BotonPrincipal(
+              texto: textoBoton!,
+              alPresionar: accionBoton!,
+              icono: Icons.refresh,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// 🍕 Helper para mostrar mensajes sabrosos
+class MensajeHelper {
+  static void mostrarExito(BuildContext contexto, String mensaje) {
+    _mostrarMensaje(contexto, mensaje, esError: false);
+  }
+
+  static void mostrarError(BuildContext contexto, String mensaje) {
+    _mostrarMensaje(contexto, mensaje, esError: true);
+  }
+
+  static void _mostrarMensaje(
+    BuildContext contexto,
+    String mensaje, {
+    required bool esError,
+  }) {
+    ScaffoldMessenger.of(contexto).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              esError ? Icons.error : Icons.check_circle,
+              color: Colors.white,
+            ),
+            const SizedBox(width: AppCSS.espacioChico),
+            Expanded(
+              child: Text(
+                mensaje,
+                style: AppEstilos.textoNormal.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: esError ? Colors.red.shade600 : AppCSS.verdePrimario,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppCSS.radioChico),
+        ),
+        duration: AppCSS.animacionLenta,
+      ),
+    );
+  }
+}
+
+// 🔄 Widget de carga bonito
+class IndicadorCarga extends StatelessWidget {
+  final String? mensaje;
+
+  const IndicadorCarga({super.key, this.mensaje});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(color: AppCSS.verdePrimario),
+          if (mensaje != null) ...[
+            const SizedBox(height: AppCSS.espacioMedio),
+            Text(mensaje!, style: AppEstilos.textoNormal),
+          ],
         ],
       ),
     );

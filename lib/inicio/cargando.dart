@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widev.dart';
+import '../wicss.dart';
 import '../wiauth/login.dart';
 import '../wiauth/auth_fb.dart';
 import '../pantallas/principal.dart';
@@ -34,7 +34,7 @@ class _PantallaCargandoState extends State<PantallaCargando> {
 
   @override
   Widget build(BuildContext context) => const Scaffold(
-    backgroundColor: AppColores.verdeClaro,
+    backgroundColor: AppCSS.verdeClaro,
     body: Center(
       child: SizedBox(
         width: 48,
@@ -42,7 +42,7 @@ class _PantallaCargandoState extends State<PantallaCargando> {
         child: CircularProgressIndicator(
           strokeWidth: 4,
           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          backgroundColor: AppColores.verdePrimario,
+          backgroundColor: AppCSS.verdePrimario,
         ),
       ),
     ),

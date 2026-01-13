@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widev.dart';
+import 'wiauth.dart';
 import 'auth_fb.dart';
 import 'login.dart';
 
@@ -18,9 +18,9 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AuthColores.verdeClaro,
       appBar: AppBar(
-        title: Text('Recuperar Contraseña', style: AppEstilos.textoBoton),
+        title: Text('Recuperar Contraseña', style: AuthEstilos.textoBoton),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pushReplacement(
@@ -30,23 +30,27 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: AppConstantes.miwp,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AuthConstantes.espacioMedio,
+        ),
         child: Form(
           key: _form,
           child: Column(
             children: [
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
 
               // 🎨 Logo
               Container(
                 width: double.infinity,
-                padding: AppConstantes.miwpL,
+                padding: const EdgeInsets.all(AuthConstantes.espacioGrande),
                 decoration: BoxDecoration(
-                  color: AppColores.verdeSuave,
-                  borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+                  color: AuthColores.verdeSuave,
+                  borderRadius: BorderRadius.circular(
+                    AuthConstantes.radioMedio,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColores.verdePrimario.withOpacity(0.2),
+                      color: AuthColores.verdePrimario.withOpacity(0.2),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -58,7 +62,7 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: AppColores.verdePrimario,
+                        color: AuthColores.verdePrimario,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -67,42 +71,42 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
                         color: Colors.white,
                       ),
                     ),
-                    AppConstantes.espacioChicoWidget,
-                    Text('Recuperar Contraseña', style: AppEstilos.tituloMedio),
+                    AuthConstantes.espacioChicoWidget,
+                    Text('Recuperar Contraseña', style: AuthEstilos.subtitulo),
                     Text(
                       'Te ayudamos a recuperarla 🔑',
-                      style: AppEstilos.textoNormal,
+                      style: AuthEstilos.textoNormal,
                     ),
                   ],
                 ),
               ),
 
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
 
               // 📧 Campo email
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                validator: AppValidadores.email,
-                style: AppEstilos.textoNormal,
+                validator: AuthValidadores.email,
+                style: AuthEstilos.textoNormal,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   hintText: 'tu@email.com',
                   prefixIcon: Icon(
                     Icons.email,
-                    color: AppColores.verdePrimario,
+                    color: AuthColores.verdePrimario,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(
-                      AppConstantes.radioMedio,
+                      AuthConstantes.radioMedio,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(
-                      AppConstantes.radioMedio,
+                      AuthConstantes.radioMedio,
                     ),
                     borderSide: BorderSide(
-                      color: AppColores.verdePrimario,
+                      color: AuthColores.verdePrimario,
                       width: 2,
                     ),
                   ),
@@ -111,30 +115,32 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
                 ),
               ),
 
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
 
               // 💡 Información
               Container(
-                padding: AppConstantes.miwp,
+                padding: const EdgeInsets.all(AuthConstantes.espacioMedio),
                 decoration: BoxDecoration(
-                  color: AppColores.verdeSuave.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(AppConstantes.radioChico),
+                  color: AuthColores.verdeSuave.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(
+                    AuthConstantes.radioChico,
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppColores.verdePrimario),
-                    AppConstantes.espacioChicoWidget,
+                    Icon(Icons.info_outline, color: AuthColores.verdePrimario),
+                    const SizedBox(width: AuthConstantes.espacioChico),
                     Expanded(
                       child: Text(
                         'Te enviaremos un email con instrucciones para restablecer tu contraseña',
-                        style: AppEstilos.textoChico,
+                        style: AuthEstilos.textoChico,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
 
               // 🎯 Botón enviar
               SizedBox(
@@ -154,26 +160,26 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
                   label: Text(_cargando ? 'Enviando...' : 'Enviar Email'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _puedeEnviar()
-                        ? AppColores.verdePrimario
-                        : AppColores.verdeSuave,
+                        ? AuthColores.verdePrimario
+                        : AuthColores.verdeSuave,
                     foregroundColor: _puedeEnviar()
                         ? Colors.white
-                        : AppColores.textoOscuro,
-                    disabledBackgroundColor: AppColores.verdeSuave,
-                    disabledForegroundColor: AppColores.textoOscuro,
+                        : AuthColores.textoOscuro,
+                    disabledBackgroundColor: AuthColores.verdeSuave,
+                    disabledForegroundColor: AuthColores.textoOscuro,
                     padding: EdgeInsets.symmetric(
-                      vertical: AppConstantes.espacioMedio,
+                      vertical: AuthConstantes.espacioMedio,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
-                        AppConstantes.radioMedio,
+                        AuthConstantes.radioMedio,
                       ),
                     ),
                   ),
                 ),
               ),
 
-              AppConstantes.espacioGrandeWidget,
+              AuthConstantes.espacioGrandeWidget,
 
               // 🔗 Volver al login
               TextButton.icon(
@@ -181,10 +187,10 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
                   context,
                   MaterialPageRoute(builder: (_) => PantallaLogin()),
                 ),
-                icon: Icon(Icons.arrow_back, color: AppColores.verdePrimario),
+                icon: Icon(Icons.arrow_back, color: AuthColores.verdePrimario),
                 label: Text(
                   'Volver al Login',
-                  style: TextStyle(color: AppColores.verdePrimario),
+                  style: TextStyle(color: AuthColores.verdePrimario),
                 ),
               ),
             ],
@@ -206,10 +212,10 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
 
       _mostrarMensaje(
         'Email de recuperación enviado. Revisa tu bandeja de entrada 📧',
-        AppColores.exito,
+        AuthColores.verdePrimario,
       );
 
-      await Future.delayed(AppConstantes.animacionLenta);
+      await Future.delayed(AuthConstantes.animacionLenta);
 
       if (mounted) {
         Navigator.pushReplacement(
@@ -220,7 +226,7 @@ class _PantallaRecuperarState extends State<PantallaRecuperar> {
     } catch (e) {
       _mostrarMensaje(
         e.toString().replaceAll('Exception: ', ''),
-        AppColores.error,
+        AuthColores.error,
       );
     } finally {
       if (mounted) setState(() => _cargando = false);

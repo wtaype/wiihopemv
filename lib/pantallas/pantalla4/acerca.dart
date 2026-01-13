@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../widev.dart';
+import '../../wicss.dart';
 
 class PantallaAcerca extends StatelessWidget {
   const PantallaAcerca({super.key});
@@ -20,13 +20,13 @@ class PantallaAcerca extends StatelessWidget {
           'Acerca de nosotros',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: AppColores.verdePrimario,
+        backgroundColor: AppCSS.verdePrimario,
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AppCSS.verdeClaro,
       body: SingleChildScrollView(
-        padding: AppConstantes.miwp,
+        padding: AppCSS.miwp,
         child: Column(
           children: [
             // Logo/Icono
@@ -34,11 +34,11 @@ class PantallaAcerca extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppColores.verdePrimario,
+                color: AppCSS.verdePrimario,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColores.verdePrimario.withOpacity(0.3),
+                    color: AppCSS.verdePrimario.withOpacity(0.3),
                     blurRadius: 15,
                     spreadRadius: 2,
                   ),
@@ -46,23 +46,23 @@ class PantallaAcerca extends StatelessWidget {
               ),
               child: const Icon(Icons.church, size: 50, color: Colors.white),
             ),
-            AppConstantes.espacioMedioWidget,
+            AppCSS.espacioMedioWidget,
 
             // Título
             Text(
               'Wiihope',
               style: AppEstilos.tituloGrande.copyWith(
-                color: AppColores.verdePrimario,
+                color: AppCSS.verdePrimario,
               ),
             ),
-            AppConstantes.espacioChicoWidget,
+            AppCSS.espacioChicoWidget,
 
             // Contenido principal
             Container(
-              padding: AppConstantes.miwpL,
+              padding: AppCSS.miwpL,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+                borderRadius: BorderRadius.circular(AppCSS.radioMedio),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +93,7 @@ class PantallaAcerca extends StatelessWidget {
                               child: Text(
                                 'Faith Comes By Hearing',
                                 style: AppEstilos.textoNormal.copyWith(
-                                  color: AppColores.verdePrimario,
+                                  color: AppCSS.verdePrimario,
                                   decoration: TextDecoration.underline,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -128,10 +128,8 @@ class PantallaAcerca extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColores.verdeSuave,
-                      borderRadius: BorderRadius.circular(
-                        AppConstantes.radioChico,
-                      ),
+                      color: AppCSS.verdeSuave,
+                      borderRadius: BorderRadius.circular(AppCSS.radioChico),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,14 +155,14 @@ class PantallaAcerca extends StatelessWidget {
                 ],
               ),
             ),
-            AppConstantes.espacioMedioWidget,
+            AppCSS.espacioMedioWidget,
 
             // Versión de la app
             Text(
               'Versión 1.0.0',
               style: TextStyle(color: Colors.grey[600], fontSize: 12),
             ),
-            AppConstantes.espacioChicoWidget,
+            AppCSS.espacioChicoWidget,
           ],
         ),
       ),

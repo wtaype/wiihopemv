@@ -49,20 +49,21 @@ dependency_overrides:
   meta: ^1.17.0
   test_api: ^0.7.9
 
+# ====== CONFIGURACIÓN DE ICONOS ======
 flutter_launcher_icons:
   android: true
-  ios: false
-  image_path: "assets/images/logo.png"
+  image_path: "assets/images/iconos.png"
   adaptive_icon_background: "#B9F6CA"
-  adaptive_icon_foreground: "assets/images/logo.png"
+  adaptive_icon_foreground: "assets/images/iconos.png"
 
+# ====== SPLASH SCREEN NATIVO (INICIO RÁPIDO) ======
 flutter_native_splash:
   color: "#B9F6CA"
-  image: assets/images/logo1.png
+  image: assets/images/inicio.png
   android_gravity: center
   android_12:
     color: "#B9F6CA"
-    image: assets/images/logo1.png
+    image: assets/images/inicio.png
 
 flutter:
   uses-material-design: true

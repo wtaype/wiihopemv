@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widev.dart';
+import '../wicss.dart';
 import 'pantalla1/oracion.dart';
 import 'pantalla2/citas.dart';
 import 'pantalla3/audio.dart';
@@ -33,7 +33,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColores.verdeClaro,
+    backgroundColor: AppCSS.verdeClaro,
     body: PageView(
       controller: _pageController,
       onPageChanged: (i) => setState(() => _indice = i),
@@ -45,14 +45,14 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
         setState(() => _indice = i);
         _pageController.animateToPage(
           i,
-          duration: AppConstantes.animacionRapida,
+          duration: AppCSS.animacionRapida,
           curve: Curves.easeInOut,
         );
       },
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
-      selectedItemColor: AppColores.verdePrimario,
-      unselectedItemColor: AppColores.gris,
+      selectedItemColor: AppCSS.verdePrimario,
+      unselectedItemColor: AppCSS.gris,
       selectedLabelStyle: AppEstilos.icoSM.copyWith(
         fontWeight: FontWeight.w500,
       ),

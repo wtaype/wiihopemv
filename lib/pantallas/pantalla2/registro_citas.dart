@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../widev.dart';
+import '../../wicss.dart';
 import '../../wiauth/auth_fb.dart';
 
 class CitaRegistro {
@@ -197,20 +197,20 @@ class _RegistroCitaSheetState extends State<RegistroCitaSheet> {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.85,
       child: SingleChildScrollView(
-        padding: AppConstantes.miwpL,
+        padding: AppCSS.miwpL,
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               Text(
                 'Nueva Frase Bíblica',
                 style: AppEstilos.tituloMedio.copyWith(
-                  color: AppColores.verdePrimario,
+                  color: AppCSS.verdePrimario,
                 ),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               TextFormField(
                 controller: _citaCtrl,
                 maxLines: 4,
@@ -221,7 +221,7 @@ class _RegistroCitaSheetState extends State<RegistroCitaSheet> {
                 ),
                 validator: (v) => _req(v, 'Cita', max: 500),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               TextFormField(
                 controller: _libroCtrl,
                 maxLength: 100,
@@ -231,14 +231,14 @@ class _RegistroCitaSheetState extends State<RegistroCitaSheet> {
                 ),
                 validator: (v) => _req(v, 'Referencia', max: 100),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               TextFormField(
                 controller: _ordenCtrl,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: 'Orden *'),
                 validator: _valOrden,
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               TextFormField(
                 controller: _nombreCtrl,
                 maxLength: 50,
@@ -247,20 +247,20 @@ class _RegistroCitaSheetState extends State<RegistroCitaSheet> {
                 ),
                 validator: (v) => _req(v, 'Nombre', max: 50),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               SwitchListTile(
                 title: const Text('Favorita?'),
                 value: _favorito,
-                activeColor: AppColores.verdePrimario,
+                activeColor: AppCSS.verdePrimario,
                 onChanged: (v) => setState(() => _favorito = v),
               ),
               SwitchListTile(
                 title: const Text('Hacer pública'),
                 value: _publico,
-                activeColor: AppColores.verdePrimario,
+                activeColor: AppCSS.verdePrimario,
                 onChanged: (v) => setState(() => _publico = v),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -269,7 +269,7 @@ class _RegistroCitaSheetState extends State<RegistroCitaSheet> {
                   label: Text(_guardando ? 'Guardando...' : 'Guardar'),
                 ),
               ),
-              AppConstantes.espacioMedioWidget,
+              AppCSS.espacioMedioWidget,
             ],
           ),
         ),

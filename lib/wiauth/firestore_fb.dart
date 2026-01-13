@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widev.dart';
+import 'wiauth.dart';
 import 'usuario.dart';
 
 class DatabaseServicio {
   static final _db = FirebaseFirestore.instance;
   static CollectionReference get _collection =>
-      _db.collection(AppFirebase.coleccionUsuarios);
+      _db.collection(AuthFirebase.coleccionUsuarios);
 
   // 🔍 Verificar usuario existe - COMPACTO
   static Future<bool> usuarioExiste(String usuario) async {
     try {
-      final doc = await _collection.doc(AppFormatos.usuario(usuario)).get();
+      final doc = await _collection.doc(AuthFormatos.usuario(usuario)).get();
       return doc.exists;
     } catch (e) {
       return false;
@@ -21,7 +21,7 @@ class DatabaseServicio {
   static Future<bool> emailExiste(String email) async {
     try {
       final query = await _collection
-          .where('email', isEqualTo: AppFormatos.email(email))
+          .where('email', isEqualTo: AuthFormatos.email(email))
           .limit(1)
           .get();
       return query.docs.isNotEmpty;
@@ -36,17 +36,17 @@ class DatabaseServicio {
       await _collection.doc(usuario.usuarioLimpio).set(usuario.toFirestore());
 
       // 🐢 Delay para tortuga Firestore
-      await Future.delayed(AppFirebase.delayVerificacion);
+      await Future.delayed(AuthFirebase.delayVerificacion);
 
       // 🔍 Verificación + retry automático
       final verificacion = await _collection.doc(usuario.usuarioLimpio).get();
       if (!verificacion.exists) {
-        await Future.delayed(AppConstantes.animacionRapida);
+        await Future.delayed(AuthConstantes.animacionRapida);
         await _collection.doc(usuario.usuarioLimpio).set(usuario.toFirestore());
       }
     } catch (e) {
       // 🔄 Retry en caso de error
-      await Future.delayed(AppConstantes.animacionRapida);
+      await Future.delayed(AuthConstantes.animacionRapida);
       await _collection.doc(usuario.usuarioLimpio).set(usuario.toFirestore());
     }
   }
@@ -54,7 +54,7 @@ class DatabaseServicio {
   // 🔍 Obtener usuario - COMPACTO
   static Future<Usuario?> obtenerUsuario(String usuario) async {
     try {
-      final doc = await _collection.doc(AppFormatos.usuario(usuario)).get();
+      final doc = await _collection.doc(AuthFormatos.usuario(usuario)).get();
       return doc.exists ? Usuario.fromFirestore(doc) : null;
     } catch (e) {
       return null;
@@ -68,7 +68,7 @@ class DatabaseServicio {
   // ⏰ Actualizar actividad - COMPACTO
   static Future<void> actualizarUltimaActividad(String usuario) async {
     try {
-      await _collection.doc(AppFormatos.usuario(usuario)).update({
+      await _collection.doc(AuthFormatos.usuario(usuario)).update({
         'ultimaActividad': Timestamp.now(),
       });
     } catch (_) {} // Silent fail
@@ -79,7 +79,7 @@ class DatabaseServicio {
     try {
       print('🌐 Leyendo usuario desde Firebase por email: $email');
       final query = await _collection
-          .where('email', isEqualTo: AppFormatos.email(email))
+          .where('email', isEqualTo: AuthFormatos.email(email))
           .limit(1)
           .get();
 
@@ -99,7 +99,7 @@ class DatabaseServicio {
     String? fotoUrl,
   ) async {
     try {
-      await _collection.doc(AppFormatos.usuario(usuario)).update({
+      await _collection.doc(AuthFormatos.usuario(usuario)).update({
         'foto': fotoUrl,
         'ultimaActividad': Timestamp.now(),
       });

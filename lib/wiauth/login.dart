@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../widev.dart';
+import 'wiauth.dart';
 import '../pantallas/principal.dart';
+import '../../wii.dart';
 import 'auth_fb.dart';
 import 'registro.dart';
 import 'recuperar.dart';
@@ -34,7 +35,6 @@ class _PantallaLoginState extends State<PantallaLogin> {
     // 🧹 Sanitización MÁS FLEXIBLE para email/usuario en login
     _controllers['emailOUsuario']!.addListener(() {
       final texto = _controllers['emailOUsuario']!.text;
-      // 🔥 SOLO quitar espacios, permitir todo lo demás
       final sanitizado = texto.replaceAll(RegExp(r'\s+'), '').toLowerCase();
       if (texto != sanitizado) {
         _controllers['emailOUsuario']!.value = TextEditingValue(
@@ -44,7 +44,6 @@ class _PantallaLoginState extends State<PantallaLogin> {
       }
     });
 
-    // 🎯 Activar botón cuando ingrese email/usuario (no esperar password)
     _controllers['emailOUsuario']!.addListener(() => setState(() {}));
     _controllers['password']!.addListener(() => setState(() {}));
   }
@@ -52,49 +51,37 @@ class _PantallaLoginState extends State<PantallaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColores.verdeClaro,
+      backgroundColor: AuthColores.verdeClaro,
       appBar: AppBar(
-        title: Text('Iniciar Sesión', style: AppEstilos.textoBoton),
+        title: Text('Iniciar Sesión', style: AuthEstilos.textoBoton),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
-        padding: AppConstantes.miwp,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AuthConstantes.espacioMedio,
+        ),
         child: Form(
           key: _form,
           child: Column(
             children: [
-              AppConstantes.espacioMedioWidget,
-
-              // 🎨 Tarjeta de bienvenida
+              AuthConstantes.espacioMedioWidget,
               _construirTarjetaBienvenida(),
-              AppConstantes.espacioGrandeWidget,
-
-              // 📧 Email o Usuario
+              AuthConstantes.espacioGrandeWidget,
               _campoEmailUsuario(),
-              AppConstantes.espacioMedioWidget,
-
-              // 🔒 Contraseña
+              AuthConstantes.espacioMedioWidget,
               _campoPassword(),
-              AppConstantes.espacioMedioWidget,
-
-              // ☑️ Recordar y Olvidé contraseña - EN UNA FILA
+              AuthConstantes.espacioMedioWidget,
               _construirFilaRecordarOlvidar(),
-              AppConstantes.espacioGrandeWidget,
-
-              // 🎯 Botón Iniciar Sesión
+              AuthConstantes.espacioGrandeWidget,
               _botonIniciarSesion(),
-              AppConstantes.espacioMedioWidget,
-
-              // 📝 Botón Crear nueva cuenta
+              AuthConstantes.espacioMedioWidget,
               _botonCrearCuenta(),
-              AppConstantes.espacioGrandeWidget,
-
-              // 📱 Versión de la app
+              AuthConstantes.espacioGrandeWidget,
               Text(
-                'Versión ${AppConstantes.version}',
-                style: AppEstilos.textoChico.copyWith(color: AppColores.gris),
+                '${wii.app} ${wii.version}',
+                style: AuthEstilos.textoChico.copyWith(color: AuthColores.gris),
               ),
-              AppConstantes.espacioMedioWidget,
+              AuthConstantes.espacioMedioWidget,
             ],
           ),
         ),
@@ -102,16 +89,15 @@ class _PantallaLoginState extends State<PantallaLogin> {
     );
   }
 
-  // 🎨 Tarjeta de bienvenida - BONITA
   Widget _construirTarjetaBienvenida() => Container(
     width: double.infinity,
-    padding: AppConstantes.miwpL,
+    padding: const EdgeInsets.all(AuthConstantes.espacioGrande),
     decoration: BoxDecoration(
-      color: AppColores.verdeSuave,
-      borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+      color: AuthColores.verdeSuave,
+      borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
       boxShadow: [
         BoxShadow(
-          color: AppColores.verdePrimario.withOpacity(0.2),
+          color: AuthColores.verdePrimario.withOpacity(0.2),
           blurRadius: 10,
           offset: const Offset(0, 5),
         ),
@@ -119,24 +105,20 @@ class _PantallaLoginState extends State<PantallaLogin> {
     ),
     child: Column(
       children: [
-        AppConstantes.miLogoCircular,
-        AppConstantes.espacioChicoWidget,
-        Text(AppConstantes.nombreApp, style: AppEstilos.tituloMedio),
-        Text('¡Bienvenido de vuelta! 😊', style: AppEstilos.textoNormal),
+        AuthConstantes.logoCircular,
+        AuthConstantes.espacioChicoWidget,
+        Text('${wii.app}', style: AuthEstilos.subtitulo),
+        Text('¡Bienvenido de vuelta! 😊', style: AuthEstilos.textoNormal),
       ],
     ),
   );
 
-  // 📧 Campo Email o Usuario - COMPACTO
   Widget _campoEmailUsuario() => TextFormField(
     controller: _controllers['emailOUsuario']!,
     keyboardType: TextInputType.emailAddress,
-    validator: (v) => AppValidadores.emailOUsuario(v),
-    style: AppEstilos.textoNormal,
-    inputFormatters: [
-      // 🔥 SOLO denegar espacios, permitir -, ., @, etc.
-      FilteringTextInputFormatter.deny(RegExp(r'\s')), // Solo sin espacios
-    ],
+    validator: AuthValidadores.emailOUsuario,
+    style: AuthEstilos.textoNormal,
+    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
     decoration: _decoracion(
       'Email o Usuario',
       'Ingresa email o usuario',
@@ -144,12 +126,11 @@ class _PantallaLoginState extends State<PantallaLogin> {
     ),
   );
 
-  // 🔒 Campo Contraseña - COMPACTO
   Widget _campoPassword() => TextFormField(
     controller: _controllers['password']!,
     obscureText: !_verPassword,
-    validator: (v) => AppValidadores.passwordLogin(v),
-    style: AppEstilos.textoNormal,
+    validator: AuthValidadores.passwordLogin,
+    style: AuthEstilos.textoNormal,
     decoration: _decoracion(
       'Contraseña',
       '••••••••',
@@ -157,32 +138,28 @@ class _PantallaLoginState extends State<PantallaLogin> {
       IconButton(
         icon: Icon(
           _verPassword ? Icons.visibility : Icons.visibility_off,
-          color: AppColores.verdePrimario,
+          color: AuthColores.verdePrimario,
         ),
         onPressed: () => setState(() => _verPassword = !_verPassword),
       ),
     ),
   );
 
-  // ☑️ Fila Recordar y Olvidé contraseña - COMO EN LA IMAGEN
   Widget _construirFilaRecordarOlvidar() => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      // ☑️ Recordar (izquierda)
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Checkbox(
             value: _recordarme,
             onChanged: (v) => setState(() => _recordarme = v ?? false),
-            activeColor: AppColores.verdePrimario,
+            activeColor: AuthColores.verdePrimario,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          Text('Recordar', style: AppEstilos.textoNormal),
+          Text('Recordar', style: AuthEstilos.textoNormal),
         ],
       ),
-
-      // 🔄 Olvidé contraseña (derecha)
       TextButton(
         onPressed: () => Navigator.push(
           context,
@@ -190,15 +167,12 @@ class _PantallaLoginState extends State<PantallaLogin> {
         ),
         child: Text(
           '¿Olvidaste contraseña?',
-          style: AppEstilos.textoNormal.copyWith(
-            color: AppColores.enlace, // 🔥 Usar color consistente
-          ),
+          style: AuthEstilos.textoNormal.copyWith(color: AuthColores.enlace),
         ),
       ),
     ],
   );
 
-  // 🎯 Botón Iniciar Sesión - SE ACTIVA CON EMAIL/USUARIO
   Widget _botonIniciarSesion() => SizedBox(
     width: double.infinity,
     child: ElevatedButton.icon(
@@ -216,21 +190,20 @@ class _PantallaLoginState extends State<PantallaLogin> {
       label: Text(_textoBotonLogin()),
       style: ElevatedButton.styleFrom(
         backgroundColor: _puedeLogin()
-            ? AppColores.verdePrimario
-            : AppColores.verdeSuave,
-        foregroundColor: _puedeLogin() ? Colors.white : AppColores.textoOscuro,
-        disabledBackgroundColor: AppColores.verdeSuave,
-        disabledForegroundColor: AppColores.textoOscuro,
-        padding: EdgeInsets.symmetric(vertical: AppConstantes.espacioMedio),
+            ? AuthColores.verdePrimario
+            : AuthColores.verdeSuave,
+        foregroundColor: _puedeLogin() ? Colors.white : AuthColores.textoOscuro,
+        disabledBackgroundColor: AuthColores.verdeSuave,
+        disabledForegroundColor: AuthColores.textoOscuro,
+        padding: EdgeInsets.symmetric(vertical: AuthConstantes.espacioMedio),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+          borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
         ),
         elevation: _cargando ? 0 : 2,
       ),
     ),
   );
 
-  // 📝 Botón Crear nueva cuenta - CON BORDES COMO EN LA IMAGEN
   Widget _botonCrearCuenta() => SizedBox(
     width: double.infinity,
     child: OutlinedButton.icon(
@@ -238,22 +211,21 @@ class _PantallaLoginState extends State<PantallaLogin> {
         context,
         MaterialPageRoute(builder: (_) => const PantallaRegistro()),
       ),
-      icon: Icon(Icons.person_add, color: AppColores.verdePrimario),
+      icon: Icon(Icons.person_add, color: AuthColores.verdePrimario),
       label: Text(
         'Crear nueva cuenta',
-        style: TextStyle(color: AppColores.verdePrimario),
+        style: TextStyle(color: AuthColores.verdePrimario),
       ),
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: AppColores.verdePrimario, width: 2),
-        padding: EdgeInsets.symmetric(vertical: AppConstantes.espacioMedio),
+        side: BorderSide(color: AuthColores.verdePrimario, width: 2),
+        padding: EdgeInsets.symmetric(vertical: AuthConstantes.espacioMedio),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+          borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
         ),
       ),
     ),
   );
 
-  // 🎨 Decoración universal - REUTILIZABLE
   InputDecoration _decoracion(
     String label,
     String hint,
@@ -262,73 +234,63 @@ class _PantallaLoginState extends State<PantallaLogin> {
   ]) => InputDecoration(
     labelText: label,
     hintText: hint,
-    prefixIcon: Icon(icon, color: AppColores.verdePrimario),
+    prefixIcon: Icon(icon, color: AuthColores.verdePrimario),
     suffixIcon: suffixIcon,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
+      borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppConstantes.radioMedio),
-      borderSide: BorderSide(color: AppColores.verdePrimario, width: 2),
+      borderRadius: BorderRadius.circular(AuthConstantes.radioMedio),
+      borderSide: BorderSide(color: AuthColores.verdePrimario, width: 2),
     ),
     filled: true,
     fillColor: Colors.white,
   );
 
-  // 🎯 Métodos de estado - OPTIMIZADOS
   String _textoBotonLogin() => _cargando ? 'Ingresando...' : 'Iniciar Sesión';
 
-  // 🔥 BOTÓN SE ACTIVA SOLO CON EMAIL/USUARIO (no necesita password)
   bool _puedeLogin() =>
       !_cargando && _controllers['emailOUsuario']!.text.trim().length >= 3;
 
-  // 🚀 Hacer login - OPTIMIZADO
   void _hacerLogin() async {
-    // Validar que tenga email/usuario Y password
     if (_controllers['emailOUsuario']!.text.trim().isEmpty) {
-      _mostrarMensaje('Ingresa tu email o usuario', AppColores.error);
+      _mostrarMensaje('Ingresa tu email o usuario', AuthColores.error);
       return;
     }
 
     if (_controllers['password']!.text.isEmpty) {
-      _mostrarMensaje('Ingresa tu contraseña', AppColores.error);
+      _mostrarMensaje('Ingresa tu contraseña', AuthColores.error);
       return;
     }
 
     setState(() => _cargando = true);
 
     try {
-      // 🔑 Login usando el método original que SÍ funciona
       await AuthServicio.login(
         _controllers['emailOUsuario']!.text,
         _controllers['password']!.text,
       );
 
-      // ✅ Éxito - Mensaje simple
-      _mostrarMensaje('¡Bienvenido de vuelta! 😊', AppColores.exito);
+      _mostrarMensaje('¡Bienvenido de vuelta! 😊', AuthColores.verdePrimario);
 
-      await Future.delayed(AppConstantes.animacionRapida);
+      await Future.delayed(AuthConstantes.animacionRapida);
 
-      // 🏠 Navegar a gastos
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (_) => const PantallaPrincipal(),
-          ), // 🔥 CAMBIAR
+          MaterialPageRoute(builder: (_) => const PantallaPrincipal()),
         );
       }
     } catch (e) {
       _mostrarMensaje(
         e.toString().replaceAll('Exception: ', ''),
-        AppColores.error,
+        AuthColores.error,
       );
     } finally {
       if (mounted) setState(() => _cargando = false);
     }
   }
 
-  // 🎯 Mostrar mensaje - UNIVERSAL
   void _mostrarMensaje(String mensaje, Color color) =>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
