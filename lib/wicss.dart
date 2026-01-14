@@ -104,6 +104,45 @@ class AppCSS {
   static Widget get espacioMedioWidget => const SizedBox(height: espacioMedio);
   static Widget get espacioGrandeWidget =>
       const SizedBox(height: espacioGrande);
+
+  // 🎨 GLASSMORPHISM (Nuevo)
+  static BoxDecoration glassmorphism = BoxDecoration(
+    gradient: LinearGradient(
+      colors: [
+        verdeSuave.withOpacity(0.3),
+        Colors.white.withOpacity(0.2),
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(
+      color: Colors.white.withOpacity(0.2),
+      width: 1.5,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: verdePrimario.withOpacity(0.1),
+        blurRadius: 20,
+        spreadRadius: 5,
+        offset: const Offset(0, 10),
+      ),
+    ],
+  );
+  
+  // Sombra suave para imagen
+  static List<BoxShadow> sombraImagen = [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.15),
+      blurRadius: 15,
+      offset: const Offset(0, 5),
+    ),
+  ];
+  
+  // Colores adicionales
+  static const Color glassFondo = Color(0xFFE8F5E9); // Verde muy claro
+  static const Color glassBorde = Color(0xFFFFFFFF);
+
 }
 
 // 🎭 ===== ESTILOS DE TEXTO =====
@@ -186,6 +225,18 @@ class AppEstilos {
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppCSS.blanco,
+  );
+
+  // Texto para reproductor glassmorphism
+  static final textoGlass = GoogleFonts.poppins(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: AppCSS.verdeOscuro,
+  );
+  
+  static final textoGlassSubtitulo = GoogleFonts.poppins(
+    fontSize: 16,
+    color: AppCSS.verdeOscuro.withOpacity(0.7),
   );
 }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../wicss.dart';
 import 'pantalla1/oracion.dart';
-import 'pantalla2/citas.dart';
-import 'pantalla3/audio.dart';
-import 'pantalla4/acerca.dart';
+import 'pantalla3/citas.dart';
+import 'pantalla2/audio.dart';
+import 'pantalla5/acerca.dart';
 import 'pantalla5/configuracion.dart';
 
 class PantallaPrincipal extends StatefulWidget {
@@ -16,8 +16,8 @@ class PantallaPrincipal extends StatefulWidget {
 class _PantallaPrincipalState extends State<PantallaPrincipal> {
   final List<Widget> _pantallas = const [
     PantallaOracion(),
-    PantallaCitas(),
     PantallaAudio(),
+    PantallaCitas(),
     PantallaAcerca(),
     PantallaConfiguracion(),
   ];
@@ -65,19 +65,19 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
           label: 'Oración',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.library_music_outlined),
+          activeIcon: Icon(Icons.library_music),
+          label: 'Biblia',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.format_quote_outlined),
           activeIcon: Icon(Icons.format_quote),
           label: 'Citas',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.library_music_outlined),
-          activeIcon: Icon(Icons.library_music),
-          label: 'Audio',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.info_outline),
           activeIcon: Icon(Icons.info),
-          label: 'Acerca',
+          label: 'Música',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings_outlined),

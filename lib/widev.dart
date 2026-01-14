@@ -243,3 +243,37 @@ class IndicadorCarga extends StatelessWidget {
     );
   }
 }
+
+class AppWidgets {
+  // Contenedor con estilo predefinido
+  static Widget contenedorOracion(String texto) => Container(
+    padding: AppCSS.miwp,
+    decoration: BoxDecoration(
+      color: AppCSS.verdeSuave,
+      borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+    ),
+    child: Text(
+      texto,
+      style: AppEstilos.textoNormal.copyWith(
+        height: 1.5,
+        color: AppCSS.verdeOscuro,
+      ),
+      textAlign: TextAlign.center,
+    ),
+  );
+
+  // Imagen con bordes redondeados
+  static Widget imagenRedondeada(String ruta) => ClipRRect(
+    borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+    child: Image.asset(ruta, fit: BoxFit.cover),
+  );
+
+  // Corazón animado reutilizable
+  static Widget corazonPulso(bool pulsoGrande) => TweenAnimationBuilder<double>(
+    tween: Tween(begin: pulsoGrande ? 1.0 : 0.88, end: pulsoGrande ? 1.06 : 0.94),
+    duration: const Duration(milliseconds: 800),
+    curve: Curves.easeInOut,
+    builder: (_, scale, child) => Transform.scale(scale: scale, child: child),
+    child: Icon(Icons.favorite, color: AppCSS.verdePrimario, size: 48),
+  );
+}

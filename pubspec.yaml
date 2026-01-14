@@ -13,7 +13,8 @@ dependencies:
     sdk: flutter
   
   # ====== AUDIO / Reproducción de contenido bíblico ======
-  audioplayers: ^6.1.0  # Reproductor de audio para versículos y capítulos
+  just_audio: ^0.10.5  # Reproductor de audio para versículos y capítulos
+  audio_session: ^0.1.21
   
   # ====== FIREBASE / Backend, autenticación y base de datos ======
   firebase_core: ^4.3.0          # Núcleo de Firebase, inicialización de servicios
