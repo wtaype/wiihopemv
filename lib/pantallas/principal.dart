@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../wicss.dart';
 import 'pantalla1/oracion.dart';
+import 'pantalla2/modelo.dart';
 import 'pantalla3/citas.dart';
-import 'pantalla2/audio.dart';
-import 'pantalla5/acerca.dart';
+import 'pantalla4/musica.dart';
 import 'pantalla5/configuracion.dart';
 
 class PantallaPrincipal extends StatefulWidget {
@@ -18,7 +18,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
     PantallaOracion(),
     PantallaAudio(),
     PantallaCitas(),
-    PantallaAcerca(),
+    PantallaMusica(),
     PantallaConfiguracion(),
   ];
 

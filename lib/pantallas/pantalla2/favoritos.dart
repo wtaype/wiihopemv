@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoritosBibliaService {
@@ -25,10 +24,7 @@ class FavoritosBibliaService {
   static List<Map<String, dynamic>> obtenerFavoritosSync() {
     return _cache.map((id) {
       final parts = id.split('|');
-      return {
-        'libro': parts[0],
-        'capitulo': int.parse(parts[1]),
-      };
+      return {'libro': parts[0], 'capitulo': int.parse(parts[1])};
     }).toList();
   }
 

@@ -10,6 +10,7 @@ import '../../wiauth/auth_fb.dart';
 import '../../wiauth/login.dart';
 import '../../wiauth/usuario.dart';
 import '../../wiauth/firestore_fb.dart';
+import 'acerca.dart';
 
 class PantallaConfiguracion extends StatefulWidget {
   const PantallaConfiguracion({super.key});
@@ -73,9 +74,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
 
     // 3. 🌐 Firebase (solo si necesario)
     print('🌐 FIREBASE lectura');
-    final usuarioFirebase = await DatabaseServicio.obtenerUsuarioPorEmail(
-      email,
-    );
+    final usuarioFirebase = await DatabaseServicio.obtenerUsuarioPorEmail(email);
     if (usuarioFirebase != null) {
       await _guardarEnStorage(usuarioFirebase);
       _usuarioCache = usuarioFirebase;
@@ -127,288 +126,275 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: Text('Configuración', style: AppEstilos.textoBoton),
-      backgroundColor: AppCSS.verdePrimario,
-      foregroundColor: AppCSS.blanco,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      actions: [
-        IconButton(
-          icon: Icon(Icons.refresh),
-          onPressed: _recargarUsuario,
-          tooltip: 'Recargar datos',
-        ),
-      ],
-    ),
-    backgroundColor: AppCSS.verdeClaro,
-    body: _cargandoUsuario
-        ? Center(child: IndicadorCarga(mensaje: 'Cargando perfil...'))
-        : _usuario == null
-        ? Center(
-            child: SinDatos(
-              mensaje: 'Error cargando usuario',
-              icono: Icons.error,
-            ),
-          )
-        : SingleChildScrollView(
-            padding: AppCSS.miwp,
-            child: Column(
-              children: [
-                AppCSS.espacioMedioWidget,
-
-                // 📷 Foto de perfil circular
-                _fotoPerfil(),
-
-                // 👤 Usuario simple sin fondo
-                _usuarioSimple(),
-
-                // 📋 Tarjeta de información personal
-                _tarjetaInformacion(),
-
-                // 🖼️ Cambiar foto (padding moderado)
-                _cambiarFoto(),
-
-                // 🚪 Cerrar sesión (padding reducido)
-                _botonCerrarSesion(),
-
-                // ℹ️ Solo versión y creado
-                _infoApp(),
-
-                AppCSS.espacioMedioWidget,
-              ],
-            ),
-          ),
-  );
-
-  // 📷 Foto de perfil - COMPACTO
-  Widget _fotoPerfil() => Center(
-    child: Container(
-      width: 120,
-      height: 120,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppCSS.blanco,
-        boxShadow: [
-          BoxShadow(
-            color: AppCSS.verdePrimario.withOpacity(0.3),
-            blurRadius: 12,
-            offset: Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ClipOval(
-        child: _usuario?.foto?.isNotEmpty == true
-            ? Image.network(
-                _usuario!.foto!,
-                width: 120,
-                height: 120,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => _fotoDefault(),
-              )
-            : _fotoDefault(),
-      ),
-    ),
-  );
-
-  // 😊 Foto por defecto con logoSmile
-  Widget _fotoDefault() => Container(
-    width: 120,
-    height: 120,
-    decoration: BoxDecoration(shape: BoxShape.circle, color: AppCSS.verdeSuave),
-    child: ClipOval(
-      child: Image.asset(
-        AppCSS.logoSmile,
-        width: 120,
-        height: 120,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) =>
-            Icon(Icons.account_circle, size: 80, color: AppCSS.verdePrimario),
-      ),
-    ),
-  );
-
-  // 👤 Usuario simple sin fondo - SÚPER LIMPIO
-  Widget _usuarioSimple() => Padding(
-    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
-    child: Text(
-      '@${_usuario?.usuario ?? 'Usuario'}',
-      style: AppEstilos.subtitulo.copyWith(
-        color: AppCSS.verdePrimario,
-        fontWeight: FontWeight.w700,
-      ),
-      textAlign: TextAlign.center,
-    ),
-  );
-
-  // 📋 Tarjeta de información personal - UNA SOLA TARJETA BLANCA
-  Widget _tarjetaInformacion() => TarjetaInformacion(
-    colorFondo: AppCSS.blanco,
-    elevacion: 3,
-    contenido: Column(
-      children: [
-        _itemInfo(
-          'Nombres Completos',
-          '${_usuario?.nombre ?? 'N/A'} ${_usuario?.apellidos ?? ''}',
-          Icons.badge,
-        ),
-        Divider(color: AppCSS.grisClaro, height: AppCSS.espacioGrande),
-        _itemInfo('Email', _usuario?.email ?? 'N/A', Icons.email),
-        Divider(color: AppCSS.grisClaro, height: AppCSS.espacioGrande),
-        _itemInfo('Grupo Unido', _usuario?.grupo ?? 'N/A', Icons.group),
-      ],
-    ),
-  );
-
-  // 📝 Item de información - SÚPER COMPACTO
-  Widget _itemInfo(String titulo, String valor, IconData icono) => Row(
-    children: [
-      Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          color: AppCSS.verdeSuave,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icono, color: AppCSS.verdePrimario, size: 22),
-      ),
-      AppCSS.espacioMedioWidget,
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              titulo,
-              style: AppEstilos.textoChico.copyWith(
-                color: AppCSS.gris,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Text(
-              valor,
-              style: AppEstilos.textoNormal.copyWith(
-                color: AppCSS.textoOscuro,
-                fontWeight: FontWeight.w600,
-              ),
+        appBar: AppBar(
+          title: Text('Configuración', style: AppEstilos.textoBoton),
+          backgroundColor: AppCSS.verdePrimario,
+          foregroundColor: AppCSS.blanco,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: _recargarUsuario,
+              tooltip: 'Recargar datos',
             ),
           ],
         ),
-      ),
-    ],
-  );
+        backgroundColor: AppCSS.verdeClaro,
+        body: _cargandoUsuario
+            ? Center(child: IndicadorCarga(mensaje: 'Cargando perfil...'))
+            : _usuario == null
+                ? Center(
+                    child: SinDatos(
+                      mensaje: 'Error cargando usuario',
+                      icono: Icons.error,
+                    ),
+                  )
+                : SingleChildScrollView(
+                    padding: AppCSS.miwp,
+                    child: Column(
+                      children: [
+                        AppCSS.espacioMedioWidget,
+                        _fotoPerfil(),
+                        _usuarioSimple(),
+                        _tarjetaInformacion(),
+                        _cambiarFoto(),
+                        _botonCerrarSesion(),
+                        _botonAcercaDe(), // 🆕 NUEVO
+                        _infoApp(),
+                        AppCSS.espacioMedioWidget,
+                      ],
+                    ),
+                  ),
+      );
+
+  // 📷 Foto de perfil - COMPACTO
+  Widget _fotoPerfil() => Center(
+        child: Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppCSS.blanco,
+            boxShadow: [
+              BoxShadow(
+                color: AppCSS.verdePrimario.withOpacity(0.3),
+                blurRadius: 12,
+                offset: Offset(0, 6),
+              ),
+            ],
+          ),
+          child: ClipOval(
+            child: _usuario?.foto?.isNotEmpty == true
+                ? Image.network(
+                    _usuario!.foto!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _fotoDefault(),
+                  )
+                : _fotoDefault(),
+          ),
+        ),
+      );
+
+  // 😊 Foto por defecto con logoSmile
+  Widget _fotoDefault() => Container(
+        width: 120,
+        height: 120,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: AppCSS.verdeSuave),
+        child: ClipOval(
+          child: Image.asset(
+            AppCSS.logoSmile,
+            width: 120,
+            height: 120,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+                Icon(Icons.account_circle, size: 80, color: AppCSS.verdePrimario),
+          ),
+        ),
+      );
+
+  // 👤 Usuario simple sin fondo - SÚPER LIMPIO
+  Widget _usuarioSimple() => Padding(
+        padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
+        child: Text(
+          '@${_usuario?.usuario ?? 'Usuario'}',
+          style: AppEstilos.subtitulo.copyWith(
+            color: AppCSS.verdePrimario,
+            fontWeight: FontWeight.w700,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+
+  // 📋 Tarjeta de información personal - UNA SOLA TARJETA BLANCA
+  Widget _tarjetaInformacion() => TarjetaInformacion(
+        colorFondo: AppCSS.blanco,
+        elevacion: 3,
+        contenido: Column(
+          children: [
+            _itemInfo(
+              'Nombres Completos',
+              '${_usuario?.nombre ?? 'N/A'} ${_usuario?.apellidos ?? ''}',
+              Icons.badge,
+            ),
+            Divider(color: AppCSS.grisClaro, height: AppCSS.espacioGrande),
+            _itemInfo('Email', _usuario?.email ?? 'N/A', Icons.email),
+            Divider(color: AppCSS.grisClaro, height: AppCSS.espacioGrande),
+            _itemInfo('Grupo Unido', _usuario?.grupo ?? 'N/A', Icons.group),
+          ],
+        ),
+      );
+
+  // 📝 Item de información - SÚPER COMPACTO
+  Widget _itemInfo(String titulo, String valor, IconData icono) => Row(
+        children: [
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: AppCSS.verdeSuave,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icono, color: AppCSS.verdePrimario, size: 22),
+          ),
+          AppCSS.espacioMedioWidget,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  titulo,
+                  style: AppEstilos.textoChico.copyWith(
+                    color: AppCSS.gris,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  valor,
+                  style: AppEstilos.textoNormal.copyWith(
+                    color: AppCSS.textoOscuro,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
 
   // 🖼️ Cambiar foto - PADDING MODERADO
   Widget _cambiarFoto() => Padding(
-    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio), // 🔥 REDUCIDO
-    child: TarjetaInformacion(
-      colorFondo: AppCSS.blanco,
-      elevacion: 2,
-      contenido: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
+        child: TarjetaInformacion(
+          colorFondo: AppCSS.blanco,
+          elevacion: 2,
+          contenido: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                  color: AppCSS.verdeSuave,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.photo_camera,
-                  color: AppCSS.verdePrimario,
-                  size: 22,
-                ),
+              Row(
+                children: [
+                  Container(
+                    width: 45,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: AppCSS.verdeSuave,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.photo_camera, color: AppCSS.verdePrimario, size: 22),
+                  ),
+                  AppCSS.espacioMedioWidget,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Foto de Perfil', style: AppEstilos.subtitulo.copyWith(color: AppCSS.textoOscuro)),
+                        Text('Agrega el enlace de tu foto', style: AppEstilos.textoChico.copyWith(color: AppCSS.gris)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               AppCSS.espacioMedioWidget,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Foto de Perfil',
-                      style: AppEstilos.subtitulo.copyWith(
-                        color: AppCSS.textoOscuro,
-                      ),
-                    ),
-                    Text(
-                      'Agrega el enlace de tu foto',
-                      style: AppEstilos.textoChico.copyWith(color: AppCSS.gris),
-                    ),
-                  ],
+              CampoTexto(
+                etiqueta: 'URL de la imagen',
+                pista: 'https://ejemplo.com/mi-foto.jpg',
+                icono: Icons.link,
+                controlador: _controllerFoto,
+                tipoTeclado: TextInputType.url,
+              ),
+              AppCSS.espacioMedioWidget,
+              SizedBox(
+                width: double.infinity,
+                child: BotonPrincipal(
+                  texto: _cargando ? 'Actualizando...' : 'Actualizar Foto',
+                  icono: Icons.update,
+                  estaCargando: _cargando,
+                  alPresionar: _actualizarFoto,
                 ),
               ),
             ],
           ),
-          AppCSS.espacioMedioWidget,
-
-          CampoTexto(
-            etiqueta: 'URL de la imagen',
-            pista: 'https://ejemplo.com/mi-foto.jpg',
-            icono: Icons.link,
-            controlador: _controllerFoto,
-            tipoTeclado: TextInputType.url,
-          ),
-          AppCSS.espacioMedioWidget,
-
-          SizedBox(
-            width: double.infinity,
-            child: BotonPrincipal(
-              texto: _cargando ? 'Actualizando...' : 'Actualizar Foto',
-              icono: Icons.update,
-              estaCargando: _cargando,
-              alPresionar: _actualizarFoto,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   // 🚪 Botón cerrar sesión - PADDING REDUCIDO
   Widget _botonCerrarSesion() => Padding(
-    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioChico), // 🔥 REDUCIDO
-    child: SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: _cerrarSesion,
-        icon: Icon(Icons.logout),
-        label: Text('Cerrar Sesión'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppCSS.error,
-          foregroundColor: AppCSS.blanco,
-          padding: EdgeInsets.symmetric(
-            vertical: AppCSS.espacioMedio,
-          ), // 🔥 REDUCIDO
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+        padding: EdgeInsets.symmetric(vertical: AppCSS.espacioChico),
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: _cerrarSesion,
+            icon: Icon(Icons.logout),
+            label: Text('Cerrar Sesión'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppCSS.error,
+              foregroundColor: AppCSS.blanco,
+              padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
+
+  // ℹ️ Botón Acerca de - COMPACTO
+  Widget _botonAcercaDe() => Padding(
+        padding: EdgeInsets.symmetric(vertical: AppCSS.espacioChico),
+        child: SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PantallaAcerca()),
+            ),
+            icon: Icon(Icons.info_outline),
+            label: Text('Acerca de'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppCSS.verdePrimario,
+              side: BorderSide(color: AppCSS.verdePrimario, width: 2),
+              padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppCSS.radioMedio),
+              ),
+            ),
+          ),
+        ),
+      );
 
   // ℹ️ Solo versión y creado - SIN ICONO NI NOMBRE DE APP
   Widget _infoApp() => Padding(
-    padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
-    child: Column(
-      children: [
-        Text(
-          'Versión ${wii.version}',
-          style: AppEstilos.textoChico.copyWith(color: AppCSS.gris),
+        padding: EdgeInsets.symmetric(vertical: AppCSS.espacioMedio),
+        child: Column(
+          children: [
+            Text('Versión ${wii.version}', style: AppEstilos.textoChico.copyWith(color: AppCSS.gris)),
+            AppCSS.espacioChicoWidget,
+            Text(AppCSS.creadoBy, style: AppEstilos.textoChico.copyWith(color: AppCSS.gris, fontStyle: FontStyle.italic)),
+          ],
         ),
-        AppCSS.espacioChicoWidget,
-        Text(
-          AppCSS.creadoBy,
-          style: AppEstilos.textoChico.copyWith(
-            color: AppCSS.gris,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 
   // 🔄 Recargar usuario - COMPACTO
   void _recargarUsuario() async {
@@ -420,9 +406,7 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
       _usuarioCache = null;
       _fechaCache = null;
 
-      final usuario = await DatabaseServicio.obtenerUsuarioPorEmail(
-        AuthServicio.usuarioActual!.email!,
-      );
+      final usuario = await DatabaseServicio.obtenerUsuarioPorEmail(AuthServicio.usuarioActual!.email!);
 
       if (usuario != null && mounted) {
         await _guardarEnStorage(usuario);
@@ -490,14 +474,9 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Cerrar Sesión', style: AppEstilos.subtitulo),
-        content: Text(
-          '¿Estás seguro que quieres cerrar sesión?',
-          style: AppEstilos.textoNormal,
-        ),
+        content: Text('¿Estás seguro que quieres cerrar sesión?', style: AppEstilos.textoNormal),
         backgroundColor: AppCSS.blanco,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppCSS.radioMedio),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppCSS.radioMedio)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -507,14 +486,9 @@ class _PantallaConfiguracionState extends State<PantallaConfiguracion> {
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppCSS.error,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppCSS.radioChico),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppCSS.radioChico)),
             ),
-            child: Text(
-              'Cerrar Sesión',
-              style: TextStyle(color: AppCSS.blanco),
-            ),
+            child: Text('Cerrar Sesión', style: TextStyle(color: AppCSS.blanco)),
           ),
         ],
       ),

@@ -6,7 +6,7 @@ class AudioLibro {
   final String nombreArchivo;
   final int trackInicio;
 
-  AudioLibro({
+  const AudioLibro({
     required this.id,
     required this.nombre,
     required this.capitulos,
