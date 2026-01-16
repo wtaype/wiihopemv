@@ -477,7 +477,7 @@ class _PantallaMusicaState extends State<PantallaMusica> with TickerProviderStat
 
   @override
   void dispose() {
-    _audio.dispose();
+    // ❌ NO llamar _audio.dispose() - mantener audio activo
     _waveController.dispose();
     super.dispose();
   }
