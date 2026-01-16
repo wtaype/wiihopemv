@@ -75,8 +75,8 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
           label: 'Citas',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.info_outline),
-          activeIcon: Icon(Icons.info),
+          icon: Icon(Icons.headphones_outlined),
+          activeIcon: Icon(Icons.headphones),
           label: 'Música',
         ),
         BottomNavigationBarItem(

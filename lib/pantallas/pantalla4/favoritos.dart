@@ -1,39 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'player.dart';
 
 class FavoritosMusicaService {
   static final _cache = <String, bool>{};
-  static bool _iniciado = false;
 
-  static Future<void> inicializar(List<Cancion> canciones) async {
-    if (_iniciado) return;
+  // Inicializar cache desde lista de canciones
+  static Future<void> init(List<Cancion> canciones, String? userEmail) async {
+    if (userEmail == null) return;
     _cache.clear();
     for (var c in canciones) {
       _cache[c.id] = c.favorito;
     }
-    _iniciado = true;
   }
 
-  static void toggleSync(Cancion cancion) {
-    cancion.favorito = !cancion.favorito;
-    _cache[cancion.id] = cancion.favorito;
-    _guardarAsync(cancion);
-  }
+  // Toggle favorito: actualiza Firebase + cache local
+  static Future<void> toggle(Cancion c, String userEmail) async {
+    final nuevoEstado = !(_cache[c.id] ?? false);
+    _cache[c.id] = nuevoEstado;
 
-  static bool esFavoritoSync(String id) => _cache[id] ?? false;
-
-  static List<Cancion> obtenerFavoritosSync(List<Cancion> todas) =>
-      todas.where((c) => _cache[c.id] ?? false).toList();
-
-  static void _guardarAsync(Cancion c) {
+    // Actualizar en Firebase
     FirebaseFirestore.instance.collection('wimusica').doc(c.id).update({
-      'favorito': c.favorito,
-      'actualizado': FieldValue.serverTimestamp(),
+      'favorito': nuevoEstado,
     }).catchError((_) {});
+
+    // Guardar en cache local
+    final prefs = await SharedPreferences.getInstance();
+    final favIds = prefs.getStringList('favoritos_cache') ?? [];
+    if (nuevoEstado) {
+      if (!favIds.contains(c.id)) favIds.add(c.id);
+    } else {
+      favIds.remove(c.id);
+    }
+    await prefs.setStringList('favoritos_cache', favIds);
   }
 
-  static void limpiar() {
-    _cache.clear();
-    _iniciado = false;
-  }
+  static bool isFav(String id) => _cache[id] ?? false;
+
+  static List<Cancion> getFavs(List<Cancion> todas) =>
+      todas.where((c) => _cache[c.id] ?? false).toList();
 }

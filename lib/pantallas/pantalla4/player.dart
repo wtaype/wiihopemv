@@ -1,10 +1,13 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const kTags = ['adoracion', 'alabanza', 'reflexion'];
+
 class Cancion {
-  final String id, url, nombre, cantante, tag, usuario, email;
-  bool favorito;
-  final dynamic creado, actualizado;
+  final String id, url, nombre, cantante, tag, email;
+  final bool favorito;
+  final Timestamp? creado;
 
   Cancion({
     required this.id,
@@ -13,10 +16,8 @@ class Cancion {
     required this.cantante,
     this.tag = 'adoracion',
     this.favorito = false,
-    required this.usuario,
     required this.email,
     this.creado,
-    this.actualizado,
   });
 
   factory Cancion.fromFirestore(Map<String, dynamic> m, String id) => Cancion(
@@ -26,10 +27,8 @@ class Cancion {
         cantante: m['cantante'] ?? '',
         tag: m['tag'] ?? 'adoracion',
         favorito: m['favorito'] ?? false,
-        usuario: m['usuario'] ?? '',
         email: m['email'] ?? '',
         creado: m['creado'],
-        actualizado: m['actualizado'],
       );
 
   factory Cancion.fromJson(Map<String, dynamic> m) => Cancion(
@@ -38,11 +37,8 @@ class Cancion {
         nombre: m['nombre'],
         cantante: m['cantante'],
         tag: m['tag'],
-        favorito: m['favorito'],
-        usuario: m['usuario'],
+        favorito: m['favorito'] ?? false,
         email: m['email'],
-        creado: m['creado'],
-        actualizado: m['actualizado'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -52,10 +48,7 @@ class Cancion {
         'cantante': cantante,
         'tag': tag,
         'favorito': favorito,
-        'usuario': usuario,
         'email': email,
-        'creado': creado,
-        'actualizado': actualizado,
       };
 }
 
@@ -139,5 +132,3 @@ class AudioService {
 
   void dispose() => _player.dispose();
 }
-
-const kTags = ['adoracion', 'alabanza', 'reflexion'];

@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../wicss.dart';
-import '../../widev.dart';
 import '../../wiauth/auth_fb.dart';
 import 'player.dart';
 import 'favoritos.dart';
@@ -15,48 +15,45 @@ class PantallaMusica extends StatefulWidget {
   State<PantallaMusica> createState() => _PantallaMusicaState();
 }
 
-class _PantallaMusicaState extends State<PantallaMusica> {
+class _PantallaMusicaState extends State<PantallaMusica> with TickerProviderStateMixin {
   final _audio = AudioService();
   List<Cancion> _canciones = [];
-  List<Cancion> _favs = [];
   String _q = '';
   bool _search = false;
   bool _loading = true;
   Duration _pos = Duration.zero;
   Duration _dur = Duration.zero;
   bool _play = false;
+  late AnimationController _waveController;
 
   @override
   void initState() {
     super.initState();
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
     _init();
   }
 
   Future<void> _init() async {
-    // 🚀 PASO 1: Cargar cache instantáneo (como citas.dart)
     final prefs = await SharedPreferences.getInstance();
     final cache = prefs.getString('canciones_cache');
-    
+
     if (cache != null) {
-      // CACHE EXISTE: Carga instantánea
       final list = jsonDecode(cache) as List;
       _canciones = list.map((m) => Cancion.fromJson(m)).toList();
-      await FavoritosMusicaService.inicializar(_canciones);
-      _favs = FavoritosMusicaService.obtenerFavoritosSync(_canciones);
+      await FavoritosMusicaService.init(_canciones, AuthServicio.usuarioActual?.email);
       setState(() => _loading = false);
-    } else {
-      // PRIMERA VEZ: Cargar desde Firebase
-      await _loadFirebase();
     }
 
-    // 🚀 PASO 2: Inicializar player (después de cargar canciones)
+    await _loadFirebase();
     await _initPlayer();
   }
 
   Future<void> _initPlayer() async {
     if (_canciones.isEmpty) return;
 
-    // Configurar listeners
     _audio.init((c) {
       if (mounted) setState(() {});
     });
@@ -70,10 +67,16 @@ class _PantallaMusicaState extends State<PantallaMusica> {
     });
 
     _audio.player.onPlayerStateChanged.listen((s) {
-      if (mounted) setState(() => _play = s == PlayerState.playing);
+      if (mounted) {
+        setState(() => _play = s == PlayerState.playing);
+        if (s == PlayerState.playing) {
+          _waveController.repeat();
+        } else {
+          _waveController.stop();
+        }
+      }
     });
 
-    // 🎵 Cargar última canción (como biblia.dart)
     final ultimaId = await AudioService.getUltimaCancion();
     final cancion = ultimaId != null
         ? _canciones.firstWhere((x) => x.id == ultimaId, orElse: () => _canciones.first)
@@ -91,14 +94,10 @@ class _PantallaMusicaState extends State<PantallaMusica> {
           .limit(100)
           .get();
 
-      _canciones = snap.docs
-          .map((d) => Cancion.fromFirestore(d.data(), d.id))
-          .toList();
+      _canciones = snap.docs.map((d) => Cancion.fromFirestore(d.data(), d.id)).toList();
 
-      await FavoritosMusicaService.inicializar(_canciones);
-      _favs = FavoritosMusicaService.obtenerFavoritosSync(_canciones);
+      await FavoritosMusicaService.init(_canciones, AuthServicio.usuarioActual?.email);
 
-      // Guardar en cache (como citas.dart)
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(
         'canciones_cache',
@@ -127,9 +126,11 @@ class _PantallaMusicaState extends State<PantallaMusica> {
     return map;
   }
 
-  void _fav(Cancion c) {
-    FavoritosMusicaService.toggleSync(c);
-    setState(() => _favs = FavoritosMusicaService.obtenerFavoritosSync(_canciones));
+  Future<void> _fav(Cancion c) async {
+    final user = AuthServicio.usuarioActual;
+    if (user == null) return;
+    await FavoritosMusicaService.toggle(c, user.email!);
+    setState(() {});
   }
 
   @override
@@ -144,10 +145,10 @@ class _PantallaMusicaState extends State<PantallaMusica> {
               color: AppCSS.verdePrimario,
               child: ListView(
                 children: [
-                  if (_audio.actual != null) _player(),
-                  if (_favs.isNotEmpty) _favList(),
+                  if (_audio.actual != null) _playerModerno(),
+                  if (FavoritosMusicaService.getFavs(_canciones).isNotEmpty) _favList(),
                   _list(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
@@ -208,73 +209,154 @@ class _PantallaMusicaState extends State<PantallaMusica> {
     );
   }
 
-  Widget _player() {
+  // 🎨 PLAYER MODERNO ESTILO SPOTIFY
+  Widget _playerModerno() {
     final c = _audio.actual!;
     final p = _dur.inSeconds > 0 ? _pos.inSeconds / _dur.inSeconds : 0.0;
 
     return Container(
-      height: 100,
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            AppCSS.verdePrimario.withOpacity(0.2),
-            AppCSS.verdeSuave.withOpacity(0.3),
+            AppCSS.verdePrimario.withOpacity(0.8),
+            AppCSS.verdeSuave.withOpacity(0.6),
           ],
         ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppCSS.blanco.withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: AppCSS.verdePrimario.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-      child: Stack(
+      child: Column(
         children: [
-          Positioned.fill(
-            child: LinearProgressIndicator(
-              value: p,
-              backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation(
-                AppCSS.verdePrimario.withOpacity(0.2),
+          // WAVES ANIMADAS
+          SizedBox(
+            height: 100,
+            child: AnimatedBuilder(
+              animation: _waveController,
+              builder: (_, __) => CustomPaint(
+                painter: _WavePainter(
+                  animation: _waveController.value,
+                  isPlaying: _play,
+                ),
+                size: const Size(double.infinity, 100),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                const Icon(Icons.music_note, color: AppCSS.verdePrimario, size: 32),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(c.nombre, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text(c.cantante, style: const TextStyle(fontSize: 12, color: AppCSS.gris), maxLines: 1),
-                      Text('${_fmt(_pos)} / ${_fmt(_dur)}', style: const TextStyle(fontSize: 10, color: AppCSS.gris)),
-                    ],
+          const SizedBox(height: 16),
+          // INFO CANCIÓN
+          Text(
+            c.nombre,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppCSS.blanco,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            c.cantante,
+            style: TextStyle(
+              fontSize: 14,
+              color: AppCSS.blanco.withOpacity(0.7),
+            ),
+            maxLines: 1,
+          ),
+          const SizedBox(height: 20),
+          // BARRA PROGRESO
+          SliderTheme(
+            data: SliderThemeData(
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+              overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
+              trackHeight: 4,
+              activeTrackColor: AppCSS.blanco,
+              inactiveTrackColor: AppCSS.blanco.withOpacity(0.3),
+              thumbColor: AppCSS.blanco,
+            ),
+            child: Slider(
+              value: p,
+              onChanged: (v) async {
+                final newPos = Duration(seconds: (v * _dur.inSeconds).toInt());
+                await _audio.player.seek(newPos);
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(_fmt(_pos), style: TextStyle(color: AppCSS.blanco.withOpacity(0.7), fontSize: 12)),
+              Text(_fmt(_dur), style: TextStyle(color: AppCSS.blanco.withOpacity(0.7), fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // CONTROLES
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Icon(
+                  FavoritosMusicaService.isFav(c.id) ? Icons.favorite : Icons.favorite_border,
+                  color: AppCSS.blanco,
+                  size: 28,
+                ),
+                onPressed: () => _fav(c),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.skip_previous,
+                  color: _audio.anterior ? AppCSS.blanco : AppCSS.blanco.withOpacity(0.3),
+                  size: 36,
+                ),
+                onPressed: _audio.anterior ? () async { await _audio.prev(); setState(() {}); } : null,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppCSS.blanco,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    _play ? Icons.pause : Icons.play_arrow,
+                    color: AppCSS.verdePrimario,
+                    size: 40,
                   ),
-                ),
-                IconButton(
-                  icon: Icon(_audio.anterior ? Icons.skip_previous : Icons.skip_previous_outlined, color: _audio.anterior ? AppCSS.verdePrimario : AppCSS.gris, size: 24),
-                  onPressed: _audio.anterior ? () async { await _audio.prev(); setState(() {}); } : null,
-                ),
-                IconButton(
-                  icon: Icon(_play ? Icons.pause_circle_filled : Icons.play_circle_filled, color: AppCSS.verdePrimario, size: 40),
                   onPressed: () async { await _audio.toggle(); setState(() {}); },
                 ),
-                IconButton(
-                  icon: Icon(_audio.siguiente ? Icons.skip_next : Icons.skip_next_outlined, color: _audio.siguiente ? AppCSS.verdePrimario : AppCSS.gris, size: 24),
-                  onPressed: _audio.siguiente ? () async { await _audio.next(); setState(() {}); } : null,
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.skip_next,
+                  color: _audio.siguiente ? AppCSS.blanco : AppCSS.blanco.withOpacity(0.3),
+                  size: 36,
                 ),
-                IconButton(
-                  icon: Icon(_audio.loop ? Icons.repeat_one : Icons.repeat, color: _audio.loop ? AppCSS.verdePrimario : AppCSS.gris, size: 20),
-                  onPressed: () { _audio.toggleLoop(); setState(() {}); },
+                onPressed: _audio.siguiente ? () async { await _audio.next(); setState(() {}); } : null,
+              ),
+              IconButton(
+                icon: Icon(
+                  _audio.loop ? Icons.repeat_one : Icons.repeat,
+                  color: _audio.loop ? AppCSS.blanco : AppCSS.blanco.withOpacity(0.5),
+                  size: 28,
                 ),
-                IconButton(
-                  icon: Icon(FavoritosMusicaService.esFavoritoSync(c.id) ? Icons.favorite : Icons.favorite_border, color: Colors.red, size: 20),
-                  onPressed: () => _fav(c),
-                ),
-              ],
-            ),
+                onPressed: () { _audio.toggleLoop(); setState(() {}); },
+              ),
+            ],
           ),
         ],
       ),
@@ -282,6 +364,7 @@ class _PantallaMusicaState extends State<PantallaMusica> {
   }
 
   Widget _favList() {
+    final favs = FavoritosMusicaService.getFavs(_canciones);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -291,7 +374,7 @@ class _PantallaMusicaState extends State<PantallaMusica> {
             children: [
               const Icon(Icons.favorite, color: Colors.red, size: 18),
               const SizedBox(width: 8),
-              Text('Favoritos (${_favs.length})', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              Text('Favoritos (${favs.length})', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -302,9 +385,9 @@ class _PantallaMusicaState extends State<PantallaMusica> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 6),
-            itemCount: _favs.length,
+            itemCount: favs.length,
             separatorBuilder: (_, __) => const Divider(height: 1, indent: 50),
-            itemBuilder: (_, i) => _item(_favs[i]),
+            itemBuilder: (_, i) => _item(favs[i]),
           ),
         ),
         const SizedBox(height: 12),
@@ -317,10 +400,10 @@ class _PantallaMusicaState extends State<PantallaMusica> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!_search)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Row(
-              children: const [
+              children: [
                 Icon(Icons.library_music, color: AppCSS.verdePrimario, size: 18),
                 SizedBox(width: 8),
                 Text('Todas', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
@@ -357,9 +440,7 @@ class _PantallaMusicaState extends State<PantallaMusica> {
 
   Widget _item(Cancion c) {
     final actual = _audio.actual?.id == c.id;
-    final fav = FavoritosMusicaService.esFavoritoSync(c.id);
-    final user = AuthServicio.usuarioActual;
-    final esPropia = user != null && c.email == user.email;
+    final fav = FavoritosMusicaService.isFav(c.id);
 
     return ListTile(
       dense: true,
@@ -368,130 +449,16 @@ class _PantallaMusicaState extends State<PantallaMusica> {
       leading: Icon(actual ? Icons.graphic_eq : Icons.music_note, color: actual ? AppCSS.verdePrimario : AppCSS.gris, size: 18),
       title: Text(c.nombre, style: TextStyle(fontSize: 13, fontWeight: actual ? FontWeight.bold : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(c.cantante, style: const TextStyle(fontSize: 11, color: AppCSS.gris), maxLines: 1),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (esPropia) const Icon(Icons.edit, size: 14, color: AppCSS.verdePrimario),
-          const SizedBox(width: 4),
-          IconButton(
-            icon: Icon(fav ? Icons.favorite : Icons.favorite_border, color: fav ? Colors.red : AppCSS.gris, size: 16),
-            onPressed: () => _fav(c),
-          ),
-        ],
+      trailing: IconButton(
+        icon: Icon(fav ? Icons.favorite : Icons.favorite_border, color: fav ? Colors.red : AppCSS.gris, size: 16),
+        onPressed: () => _fav(c),
       ),
       tileColor: actual ? AppCSS.verdeSuave.withOpacity(0.2) : null,
       onTap: () async {
         await _audio.play(c, playlist: _canciones);
         setState(() {});
       },
-      onLongPress: esPropia ? () => _edit(c) : null,
     );
-  }
-
-  void _edit(Cancion c) async {
-    final n = TextEditingController(text: c.nombre);
-    final a = TextEditingController(text: c.cantante);
-
-    final ok = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
-        child: Container(
-          height: MediaQuery.of(ctx).size.height * 0.5,
-          decoration: const BoxDecoration(
-            color: AppCSS.blanco,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    const Text('✏️ Editar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    const Spacer(),
-                    IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(ctx)),
-                  ],
-                ),
-              ),
-              const Divider(height: 1),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      TextField(controller: n, decoration: const InputDecoration(labelText: 'Nombre *', border: OutlineInputBorder(), prefixIcon: Icon(Icons.music_note))),
-                      const SizedBox(height: 16),
-                      TextField(controller: a, decoration: const InputDecoration(labelText: 'Cantante *', border: OutlineInputBorder(), prefixIcon: Icon(Icons.person))),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 50,
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(foregroundColor: Colors.red, side: const BorderSide(color: Colors.red)),
-                                icon: const Icon(Icons.delete),
-                                label: const Text('Eliminar'),
-                                onPressed: () async {
-                                  final confirmar = await showDialog<bool>(
-                                    context: ctx,
-                                    builder: (_) => AlertDialog(
-                                      title: const Text('¿Eliminar?'),
-                                      content: const Text('No se puede deshacer'),
-                                      actions: [
-                                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No')),
-                                        TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Sí', style: TextStyle(color: Colors.red))),
-                                      ],
-                                    ),
-                                  );
-                                  if (confirmar == true) {
-                                    await FirebaseFirestore.instance.collection('wimusica').doc(c.id).delete();
-                                    Navigator.pop(ctx, true);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            flex: 2,
-                            child: SizedBox(
-                              height: 50,
-                              child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(backgroundColor: AppCSS.verdePrimario, foregroundColor: AppCSS.blanco),
-                                icon: const Icon(Icons.save),
-                                label: const Text('Guardar'),
-                                onPressed: () async {
-                                  if (n.text.isEmpty || a.text.isEmpty) return;
-                                  await FirebaseFirestore.instance.collection('wimusica').doc(c.id).update({
-                                    'nombre': n.text.trim(),
-                                    'cantante': a.text.trim(),
-                                    'actualizado': FieldValue.serverTimestamp(),
-                                  });
-                                  Navigator.pop(ctx, true);
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    if (ok == true) {
-      await _loadFirebase();
-      if (mounted) MensajeHelper.mostrarExito(context, '✅');
-    }
   }
 
   String _fmt(Duration d) => '${d.inMinutes}:${(d.inSeconds % 60).toString().padLeft(2, '0')}';
@@ -511,6 +478,49 @@ class _PantallaMusicaState extends State<PantallaMusica> {
   @override
   void dispose() {
     _audio.dispose();
+    _waveController.dispose();
     super.dispose();
   }
+}
+
+// 🎨 PAINTER PARA WAVES ANIMADAS
+class _WavePainter extends CustomPainter {
+  final double animation;
+  final bool isPlaying;
+
+  _WavePainter({required this.animation, required this.isPlaying});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppCSS.blanco.withOpacity(0.3)
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final waveHeight = isPlaying ? 20.0 : 5.0;
+    final waveCount = 3;
+
+    for (var i = 0; i < waveCount; i++) {
+      path.reset();
+      final offset = (animation + i / waveCount) * 2 * math.pi;
+
+      path.moveTo(0, size.height / 2);
+
+      for (var x = 0.0; x <= size.width; x++) {
+        final y = size.height / 2 +
+            math.sin((x / size.width) * 4 * math.pi + offset) * waveHeight;
+        path.lineTo(x, y);
+      }
+
+      path.lineTo(size.width, size.height);
+      path.lineTo(0, size.height);
+      path.close();
+
+      canvas.drawPath(path, paint);
+      paint.color = paint.color.withOpacity(paint.color.opacity * 0.7);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_WavePainter oldDelegate) => true;
 }
